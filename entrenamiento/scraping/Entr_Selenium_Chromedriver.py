@@ -1,0 +1,21 @@
+# -*- coding: utf-8 -*-
+"""
+Utilización selenium con chromedriver
+sobre la web http://www.python.org
+"""
+
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+
+driver = webdriver.Chrome()
+driver.get("http://www.python.org")
+assert "Python" in driver.title
+
+print (driver.title)
+
+elem = driver.find_element_by_name("q")
+elem.clear()
+elem.send_keys("pycon")
+elem.send_keys(Keys.RETURN)
+assert "No results found." not in driver.page_source
+driver.close()
