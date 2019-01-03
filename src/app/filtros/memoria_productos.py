@@ -5,12 +5,14 @@ Filtro Colaborativo basodo en Productos
 import numpy as np
 
 # Carga datos inicales - Matrices Y - R
-Y = np.load('..\datos\Y.npy')
-R = np.load('..\datos\R.npy')
+Y = np.load('..\static\datos\Y.npy')
+R = np.load('..\static\datos\R.npy')
 nJuegos,nUsers = Y.shape
 
 # Crea matriz similitud (Coef.Corr.Pearson)
 sim = np.corrcoef(Y, rowvar=True)
+# Da valor -1 a sim donde varianza de Y sea 0 (sin volores con NaN)   
+sim[np.where(sim == np.NaN)] = -1
 
 # Crea matriz Predicción Filtro Colab. Productos
 P_Mem_Juegos = np.copy(Y)
@@ -23,7 +25,8 @@ for indP in indPredecir:
 
     juego = indP[0]
     user = indP[1]
-   
+    
+    #if (sim[:,juego]<=0).all is not None:
     # Indices a eliminar por sim negativa o ser el propio Juego
     indElim = np.array(np.where(sim[:,juego]<=0))
     indElim = np.append(indElim, juego)
@@ -35,7 +38,7 @@ for indP in indPredecir:
     sumaDsor = np.sum(np.absolute(simJuego))
 
     P_Mem_Juegos[juego,user] = sumaDdo/sumaDsor
-    
+	
 
 # Guarda Matriz Pronosticos
-np.save('../datos/P_Mem_Juegos', P_Mem_Juegos)
+np.save('../static/datos/P_Mem_Juegos', P_Mem_Juegos)

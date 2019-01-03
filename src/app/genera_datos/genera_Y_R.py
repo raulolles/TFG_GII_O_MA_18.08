@@ -33,8 +33,8 @@ def generaTablas(nJuegos):
     R[Y>0]=1
     
     # Guarda Matrices
-    np.save('../datos/Y', Y)
-    np.save('../datos/R', R)
+    np.save('../static/datos/Y', Y)
+    np.save('../static/datos/R', R)
    
     
     

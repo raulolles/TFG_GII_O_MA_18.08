@@ -8,7 +8,7 @@ Created on Thu Nov 22 08:05:00 2018
 from selenium import webdriver
 #from selenium.webdriver.common.keys import Keys
 from time import time
-from genera_datos import genera_Y_R as g
+import genera_Y_R as g
 
 driver = webdriver.Chrome()
 
@@ -17,7 +17,7 @@ pagina = 1
 pag = 0
 nJuegos = 0
 tiempo = time()
-csvfile = open('../datos/datosJuegos.csv', 'w')
+csvfile = open('../static/datos/datosJuegos.csv', 'w')
 
 while continua:
 
@@ -52,7 +52,7 @@ while continua:
                 
         print("   --> Paginas Analizadas   : ", pag)
         print("   --> Juegos Referenciados : ", nJuegos)    
-        
+        #continua = False # <--  -- - A ELIMINAR
     except:
         continua = False
         
@@ -62,9 +62,10 @@ csvfile.close()
 driver.close()
 
 
-# Genera tablas Y R
+# Genera tablas Y, R, P_Modelos, P_Men_Users y P_Mem_Juegos
 #   Evitamos utilziar en futuro datos desfasados para filtros
 g.generaTablas(nJuegos)
+
 
 print("\n-------  Resultados del Scraping --------")
 print("   --> Paginas Analizadas   : ", pag)

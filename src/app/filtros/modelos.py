@@ -46,8 +46,8 @@ def cofiCostFunc_minimize(parameters):
 
 
 # Carga datos inicales - Matrices Y - R
-Y = np.load('..\datos\Y.npy')
-R = np.load('..\datos\R.npy')
+Y = np.load('..\static\datos\Y.npy')
+R = np.load('..\static\datos\R.npy')
 
 nJuegos,nUsers = Y.shape
 nFeat = 10
@@ -57,17 +57,17 @@ initParam = np.random.rand(1, nUsers*nFeat + nJuegos*nFeat)
 
 # Minimize the function using minimize from the package scipy.optimize and get the optimized parameters
 parameters = (minimize(cofiCostFunc_minimize,initParam,method="CG",jac=True,
-                   options={'maxiter':max_iter, "disp":True})).x
+				   options={'maxiter':max_iter, "disp":True})).x
 
-                       
+						   
 # Matriz X y Theta
 X = parameters[0 : nJuegos*nFeat]
 X = X.reshape(nJuegos, nFeat)
 Theta = parameters[nJuegos*nFeat :]
 Theta = Theta.reshape(nUsers, nFeat)
-
+	
 # Predicciones
 P_Modelos = np.dot(X, Theta.T)
 
 # Graba la matriz de predicción
-np.save('../datos/P_Modelos', P_Modelos)
+np.save('../static/datos/P_Modelos', P_Modelos)
