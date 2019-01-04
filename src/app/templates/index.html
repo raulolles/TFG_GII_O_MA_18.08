@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+	
+	<table>
+        <tr valign="bottom">
+            <td><img src="{{url_for('static', filename="avatares/" + current_user.avatar + ".png")}}" width="70" height="70"/></td>
+            <td> <h2>Hi! {{ current_user.username }}</h2> </td>
+        </tr>
+    </table>
+
+	
+{% endblock %}
