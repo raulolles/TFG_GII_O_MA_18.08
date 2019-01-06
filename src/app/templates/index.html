@@ -8,6 +8,49 @@
             <td> <h2>Hi! {{ current_user.username }}</h2> </td>
         </tr>
     </table>
+	
+	{% for seleccion in selecciones %}
+	<hr/> <h4> {{ seleccion.filtro }} </h4>
+	<table>
+	<tr valign = "top">
+    {% for juego in seleccion.select %}
+		<td style = "padding-right: 20px">
+			<div style = "background-color: #f8f8f8; color:gray; width:150px; box-shadow: 3px 3px 6px gray">
+				<a href="http://archive.org/details/{{ juego[5] }}" target="_blank">
+					<img style="width:150px; height:200px" src="http://archive.org/services/img/{{ juego[5] }}">
+				</a>
+				<div style = "padding:5px">
+					<div>
+						<a href="http://archive.org/details/{{ juego[5] }}" target="_blank"> 
+						{{ juego[0] }} </a>
+					</div>
+					<div style = "font-size:10px">
+						by {{ juego[1] }}
+					</div>
+					<div style = "font-size:9px; text-align:center; margin-top:8px; margin-bottom:33px">
+						<div style = "width: 25%; float:left">
+							<img src="{{url_for('static', filename="simbolos/disk.png")}}" width="18" height="18"/>
+						</div>
+						<div style = "width: 25%; float:left">
+							<img src="{{url_for('static', filename="simbolos/eye.png")}}" width="12" height="12"/>
+							<p> {{ juego[2] }} <p>
+						</div>
+						<div style = "width: 25%; float:left">
+							<img src="{{url_for('static', filename="simbolos/star.png")}}" width="10" height="10"/>
+							<p> {{ juego[3] }} <p>
+						</div>
+						<div style = "width: 25%; float:right">
+							<img src="{{url_for('static', filename="simbolos/comment.png")}}" width="12" height="10"/>
+							<p> {{ juego[4] }} <p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</td>
+    {% endfor %}
+	</tr>
+	</table>
+    {% endfor %}
 
 	
 {% endblock %}
