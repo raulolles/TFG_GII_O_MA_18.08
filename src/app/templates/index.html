@@ -9,6 +9,17 @@
         </tr>
     </table>
 	
+	<script type="text/javascript">
+		function muestraJuego(){
+			capa = document.getElementById("capaJuego");
+			capa.style.display='block'
+		}
+	</script>
+	
+	<div id="capaJuego" style="display:none">
+		<iframe height="500px" width="100%" name="iframe_a"></iframe>
+	</div>
+	
 	{% for seleccion in selecciones %}
 	<hr/> <h4> {{ seleccion.filtro }} </h4>
 	<table>
@@ -16,12 +27,12 @@
     {% for juego in seleccion.select %}
 		<td style = "padding-right: 20px">
 			<div style = "background-color: #f8f8f8; color:gray; width:150px; box-shadow: 3px 3px 6px gray">
-				<a href="http://archive.org/details/{{ juego[5] }}" target="_blank">
+				<a href="http://archive.org/details/{{ juego[5] }}" target="iframe_a" onClick="muestraJuego()">
 					<img style="width:150px; height:200px" src="http://archive.org/services/img/{{ juego[5] }}">
 				</a>
 				<div style = "padding:5px">
 					<div>
-						<a href="http://archive.org/details/{{ juego[5] }}" target="_blank"> 
+						<a href="http://archive.org/details/{{ juego[5] }}" target="iframe_a" onClick="muestraJuego()"> 
 						{{ juego[0] }} </a>
 					</div>
 					<div style = "font-size:10px">
