@@ -1,5 +1,6 @@
 import numpy as np
 from pandas import read_table
+import random
 
 
 def selectDeMatriz(P,R,idUser,unidSelect,items):
@@ -18,24 +19,42 @@ def selectDeMatriz(P,R,idUser,unidSelect,items):
 	seleccion = items.loc[l[:,0][0:unidSelect]].values.tolist()
 	return seleccion
 	
-def select(idUser):
-	unidSelect = 5
+	
+def importaTablas():
 
 	# Importa Matrices
-	Y = np.load('app\static\Datos\Y.npy')
-	R = np.load('app\static\Datos\R.npy')
-	P_Modelos = np.load('app\static\Datos\P_Modelos.npy')
-	P_Mem_Users = np.load('app\static\Datos\P_Mem_Users.npy')
-	P_Mem_Juegos = np.load('app\static\Datos\P_Mem_Juegos.npy')
+	Y = np.load('app\static\datos\Y.npy')
+	R = np.load('app\static\datos\R.npy')
+	P_Modelos = np.load('app\static\datos\P_Modelos.npy')
+	P_Mem_Users = np.load('app\static\datos\P_Mem_Users.npy')
+	P_Mem_Juegos = np.load('app\static\datos\P_Mem_Juegos.npy')
+	
+	# Importa Datos del scraping
+	items = read_table('app\static\datos\datosJuegos.csv',header=None,sep=';',encoding='ISO-8859-1')
+	items.columns = ['juego','fabricante','visitas', 'favoritos', 'comentarios', 'url']
 
+	return Y, R, P_Modelos, P_Mem_Users, P_Mem_Juegos, items
+	
+	
+def select(idUser):
+	unidSelect = 5
+	Y, R, P_Modelos, P_Mem_Users, P_Mem_Juegos, items = importaTablas()
 	R0 = R[:,idUser]
 
-	# Importa Datos del scraping
-	items = read_table('app\static\Datos\datosJuegos.csv',header=None,sep=';',encoding='ISO-8859-1')
-	items.columns = ['juego','fabricante','visitas', 'favoritos', 'comentarios', 'url']
-	
 	selectUsers = selectDeMatriz(P_Mem_Users,R0,idUser,unidSelect,items)	
 	selectJuegos = selectDeMatriz(P_Mem_Juegos,R0,idUser,unidSelect,items)
 	selectModelos = selectDeMatriz(P_Modelos,R0,idUser,unidSelect,items)
 
 	return selectModelos, selectUsers, selectJuegos
+	
+def selectAleatorio():
+	unidSelect = 5
+	Y, R, P_Modelos, P_Mem_Users, P_Mem_Juegos, items = importaTablas()
+	nJuegos,nUsers = Y.shape
+	nJuegos = nJuegos-1
+	select = list()
+	
+	for i in range (unidSelect):
+		select.append(items.loc[random.randint(0,nJuegos)].values.tolist())
+	
+	return select
