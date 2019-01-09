@@ -3,7 +3,7 @@
 {% block app_content %}
 	
 	<table>
-        <tr valign="bottom">
+        <tr style = "vertical-align:bottom">
             <td><img src="{{url_for('static', filename="avatares/" + current_user.avatar + ".png")}}" width="70" height="70" alt="user avatar"/></td>
             <td> <h2>Hi! {{ current_user.username }}</h2> </td>
         </tr>
@@ -23,7 +23,7 @@
 	{% for seleccion in selecciones %}
 	<hr/> <h4> {{ seleccion.filtro }} </h4>
 	<table>
-	<tr valign = "top">
+	<tr style = "vertical-align:top">
     {% for juego in seleccion.select %}
 		<td style = "padding-right: 20px">
 			<div style = "background-color: #f8f8f8; color:gray; width:150px; box-shadow: 3px 3px 6px gray">

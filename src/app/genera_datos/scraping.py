@@ -6,7 +6,6 @@ Created on Thu Nov 22 08:05:00 2018
 """
 
 from selenium import webdriver
-#from selenium.webdriver.common.keys import Keys
 from time import time
 import genera_Y_R as g
 
@@ -52,7 +51,7 @@ while continua:
                 
         print("   --> Paginas Analizadas   : ", pag)
         print("   --> Juegos Referenciados : ", nJuegos)    
-        #continua = False # <--  -- - A ELIMINAR
+
     except:
         continua = False
         

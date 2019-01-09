@@ -30,13 +30,6 @@ print("  --> Loaclización 'h1'    : ", h1.location)
 print("  --> Tamaño 'h1'          : ", h1.size, "\n")
 
 
-#elem = driver.find_element_by_class_name("item-ia hov")
-#elem = driver.find_element_by_class_name("columns-items.more-pages")
-
-# Opción todas juntas
-#elem = driver.find_element_by_id("ikind--downloads")
-
-# Opción de una en una
 elem = driver.find_elements_by_xpath("//div [@class='item-ia hov']")
 
 
