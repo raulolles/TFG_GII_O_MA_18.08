@@ -63,7 +63,7 @@ driver.close()
 
 # Genera tablas Y, R, P_Modelos, P_Men_Users y P_Mem_Juegos
 #   Evitamos utilziar en futuro datos desfasados para filtros
-g.generaTablas(n_juegos)
+g.genera_tablas(n_juegos)
 
 
 print("\n-------  Resultados del Scraping --------")

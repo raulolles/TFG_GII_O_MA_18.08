@@ -18,7 +18,7 @@ n_valoraciones = 100
 
 
 # Genera valoraciones aleatorias entre 0 y 5
-def generaTablas(n_juegos):
+def genera_tablas(n_juegos):
     
     # Crea Y R a zeros
     y = np.zeros ((n_juegos, n_users), dtype = np.float)
