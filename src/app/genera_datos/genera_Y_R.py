@@ -12,29 +12,29 @@ import numpy as np
 import random
 
 
-ratingMax = 5
-nUsers = 1000
-nValoraciones = 100
+rating_max = 5
+n_users = 1000
+n_valoraciones = 100
 
 
 # Genera valoraciones aleatorias entre 0 y 5
-def generaTablas(nJuegos):
+def generaTablas(n_juegos):
     
     # Crea Y R a zeros
-    Y = np.zeros ((nJuegos, nUsers), dtype = np.float)
-    R = np.zeros ((nJuegos, nUsers), dtype = np.int)
+    y = np.zeros ((n_juegos, n_users), dtype = np.float)
+    r = np.zeros ((n_juegos, n_users), dtype = np.int)
     
     # Rellena Y
-    for user in range(nUsers):
-        for j in range(nValoraciones):
-            Y[random.randint(0,nJuegos-1), user] = random.randint(0, ratingMax)
+    for user in range(n_users):
+        for j in range(n_valoraciones):
+            y[random.randint(0,n_juegos-1), user] = random.randint(0, rating_max)
 
     # Genera R
-    R[Y>0]=1
+    r[y>0]=1
     
     # Guarda Matrices
-    np.save('../static/datos/Y', Y)
-    np.save('../static/datos/R', R)
+    np.save('../static/datos/Y', y)
+    np.save('../static/datos/R', r)
    
     
     

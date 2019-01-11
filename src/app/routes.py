@@ -4,8 +4,8 @@ from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import LoginForm, RegistrationForm
 from app.models import User
-from app.filtros.selectOfertas import select, selectAleatorio
-from app.filtros.actualizaFiltros import actualizaFiltros
+from app.filtros.selectOfertas import select, select_aleatorio
+from app.filtros.actualizaFiltros import actualiza_filtros
 import numpy as np
 
 @app.route('/')
@@ -13,9 +13,9 @@ import numpy as np
 @login_required
 # Si el usuario está logeado selecciona ofertas
 def index():
-	idUser = current_user.id - 1
-	selectModelos, selectUsers, selectJuegos = select(idUser)
-	selecciones = [{'filtro': 'Modelos', 'select':selectModelos}, {'filtro': 'Usuarios', 'select':selectUsers}, {'filtro': 'Productos', 'select':selectJuegos}]
+	id_user = current_user.id - 1
+	select_modelos, select_users, select_juegos = select(id_user)
+	selecciones = [{'filtro': 'Modelos', 'select':select_modelos}, {'filtro': 'Usuarios', 'select':select_users}, {'filtro': 'Productos', 'select':select_juegos}]
 	return render_template('index.html', title='Home', selecciones=selecciones)
 
 
@@ -24,7 +24,7 @@ def login():
 	if current_user.is_authenticated:
 		return redirect(url_for('index'))
 	form = LoginForm()
-	selecciones = selectAleatorio()
+	selecciones = select_aleatorio()
 	if form.validate_on_submit():
 		user = User.query.filter_by(username=form.username.data).first()
 		if user is None or not user.check_password(form.password.data):
@@ -54,7 +54,7 @@ def register():
 		user.set_password(form.password.data)
 		
 		# Actuliza las tablas e Insercción en BD
-		actualizaFiltros()
+		actualiza_filtros()
 		db.session.add(user)
 		db.session.commit()
 		

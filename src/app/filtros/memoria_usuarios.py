@@ -5,40 +5,40 @@ Filtro Colaborativo basodo en Usuarios
 import numpy as np
 
 # Carga datos inicales - Matrices Y - R
-Y = np.load('..\static\datos\Y.npy')
-R = np.load('..\static\datos\R.npy')
-nJuegos,nUsers = Y.shape
+y = np.load('..\static\datos\Y.npy')
+r = np.load('..\static\datos\R.npy')
+nJuegos,nUsers = y.shape
 
 # Crea matriz similitud (Coef.Corr.Pearson)
-sim = np.corrcoef(Y, rowvar=False)
+sim = np.corrcoef(y, rowvar=False)
 
 # Crea matriz Predicción Filtro Colab. Usuarios
-P_Mem_Users = np.copy(Y)
+p_mem_users = np.copy(y)
 
 # Recorre todos los juegos sin Valoración para generar Predicción
 # indices de juegos a Predecir rating
-indPredecir = np.transpose(np.where(R==0))
+ind_predecir = np.transpose(np.where(r==0))
 
-for indP in indPredecir:
+for ind_p in ind_predecir:
 
-    juego = indP[0]
-    user = indP[1]
-    sumaDdo = 0
-    sumaDsor = 0
+    juego = ind_p[0]
+    user = ind_p[1]
+    suma_ddo = 0
+    suma_dsor = 0
 	
     # Recorre todos los users que han jugado al juego y similutid > 0
     # indices de users que han jugado a juego a predecir para User
-    indJugado = np.transpose(np.where(R[juego,:]==1))
-    indJugado = indJugado[:,0]
-    indJugadoRed = list(filter(lambda x: (sim[x,user]>0), indJugado))
+    ind_jugado = np.transpose(np.where(r[juego,:]==1))
+    ind_jugado = ind_jugado[:,0]
+    ind_jugado_red = list(filter(lambda x: (sim[x,user]>0), ind_jugado))
 	
     # Controla que no hay ningún usuario con sim > 0
-    if len(indJugadoRed) > 0:
-        for iUserJdo in indJugadoRed:
-            sumaDdo = sumaDdo + (Y[juego,iUserJdo]-Y[:,iUserJdo].mean()) * sim[iUserJdo,user]
-            sumaDsor = sumaDsor + np.absolute(sim[iUserJdo,user])
-        P_Mem_Users[juego,user] = Y[:,user].mean() + (sumaDdo/sumaDsor)
+    if len(ind_jugado_red) > 0:
+        for i_user_jdo in ind_jugado_red:
+            suma_ddo = suma_ddo + (y[juego,i_user_jdo]-y[:,i_user_jdo].mean()) * sim[i_user_jdo,user]
+            suma_dsor = suma_dsor + np.absolute(sim[i_user_jdo,user])
+        p_mem_users[juego,user] = y[:,user].mean() + (suma_ddo/suma_dsor)
 
 
 # Guarda Matriz Pronosticos
-np.save('../static/datos/P_Mem_Users', P_Mem_Users)
+np.save('../static/datos/P_Mem_Users', p_mem_users)

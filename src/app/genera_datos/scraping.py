@@ -14,7 +14,7 @@ driver = webdriver.Chrome()
 continua = True
 pagina = 1
 pag = 0
-nJuegos = 0
+n_juegos = 0
 tiempo = time()
 csvfile = open('../static/datos/datosJuegos.csv', 'w')
 
@@ -31,7 +31,7 @@ while continua:
         elem2 = driver.find_elements_by_class_name("item-img ")        
         
         if len(elem) > 0:
-            nJuegos = nJuegos +  len(elem)
+            n_juegos = n_juegos +  len(elem)
             pag = pag+1
             pagina = pagina +1
             
@@ -42,16 +42,16 @@ while continua:
                 juego[1] = juego[1][3:]
                 
                 link = elem2[i].get_attribute('src').split('/')
-                linkOK = link[len(link)-1]
+                link_ok = link[len(link)-1]
                 
-                csvfile.write(juego[0]+";"+juego[1]+";"+juego[long-5]+";"+juego[long-3]+";"+juego[long-1]+";"+linkOK+"\n")
+                csvfile.write(juego[0]+";"+juego[1]+";"+juego[long-5]+";"+juego[long-3]+";"+juego[long-1]+";"+link_ok+"\n")
                 i = i+1                
         else: 
             continua = False
                 
         print("   --> Paginas Analizadas   : ", pag)
-        print("   --> Juegos Referenciados : ", nJuegos)    
-
+        print("   --> Juegos Referenciados : ", n_juegos)    
+		
     except:
         continua = False
         
@@ -63,12 +63,12 @@ driver.close()
 
 # Genera tablas Y, R, P_Modelos, P_Men_Users y P_Mem_Juegos
 #   Evitamos utilziar en futuro datos desfasados para filtros
-g.generaTablas(nJuegos)
+g.generaTablas(n_juegos)
 
 
 print("\n-------  Resultados del Scraping --------")
 print("   --> Paginas Analizadas   : ", pag)
-print("   --> Juegos Referenciados : ", nJuegos)
+print("   --> Juegos Referenciados : ", n_juegos)
 print("   --> Tiempo               : %.2f segundos" %(time()-tiempo))
 
 # 17.000  = 134 páginas

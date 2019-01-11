@@ -8,66 +8,66 @@ from scipy.optimize import minimize
 
 
 # Calculo del Coste (J) y el Gradiante de J
-def cofiCostFunc (parameters, Y, R, n_users, n_juegos, n_features, lamb):
+def cofi_cost_func (parameters, y, r, n_users, n_juegos, n_features, lamb):
 
     cost=0
     gradient=np.zeros_like(parameters)
     
     # Matriz X y Theta
-    X = parameters[0 : n_juegos*n_features]
-    X = X.reshape(n_juegos, n_features)
-    Theta = parameters[n_juegos*n_features :]
-    Theta = Theta.reshape(n_users, n_features)
+    x = parameters[0 : n_juegos*n_features]
+    x = x.reshape(n_juegos, n_features)
+    theta = parameters[n_juegos*n_features :]
+    theta = theta.reshape(n_users, n_features)
     
     # Coste
-    MatrizHipot = X.dot(Theta.T)
-    MatrizError = (MatrizHipot - Y) * R
-    MatrizErrorCuad = MatrizError ** 2
-    MatrizErrorCuadPelVista = MatrizErrorCuad
+    matriz_hipot = x.dot(theta.T)
+    matriz_error = (matriz_hipot - y) * r
+    matriz_error_cuad = matriz_error ** 2
+    matriz_error_cuad_pel_vista = matriz_error_cuad
     
-    error = np.sum(MatrizErrorCuadPelVista)
+    error = np.sum(matriz_error_cuad_pel_vista)
     cost = error * 0.5
     
     # regularización
-    cost = cost + np.sum(lamb*0.5*(X*X))
-    cost = cost + np.sum(lamb*0.5*(Theta*Theta))
+    cost = cost + np.sum(lamb*0.5*(x*x))
+    cost = cost + np.sum(lamb*0.5*(theta*theta))
     
     # Gradiante
-    gradX = MatrizError.dot(Theta) + lamb * X
-    gradTheta = MatrizError.T.dot(X) + lamb * Theta
-    gradient = np.append(gradX.flatten(), gradTheta.flatten())  
+    grad_x = matriz_error.dot(theta) + lamb * x
+    grad_theta = matriz_error.T.dot(x) + lamb * theta
+    gradient = np.append(grad_x.flatten(), grad_theta.flatten())  
      
     return (cost, gradient)
 
 
 # Define a function to be minimized
-def cofiCostFunc_minimize(parameters):
-    return cofiCostFunc(parameters,Y, R, nUsers, nJuegos, nFeat,lamb)
+def cofi_cost_func_minimize(parameters):
+    return cofi_cost_func(parameters,y, r, n_users, n_juegos, n_feat,lamb)
 
 
 # Carga datos inicales - Matrices Y - R
-Y = np.load('..\static\datos\Y.npy')
-R = np.load('..\static\datos\R.npy')
+y = np.load('..\static\datos\Y.npy')
+r = np.load('..\static\datos\R.npy')
 
-nJuegos,nUsers = Y.shape
-nFeat = 10
+n_juegos,n_users = y.shape
+n_feat = 10
 lamb = 10
 max_iter=200
-initParam = np.random.rand(1, nUsers*nFeat + nJuegos*nFeat)
+initParam = np.random.rand(1, n_users*n_feat + n_juegos*n_feat)
 
 # Minimize the function using minimize from the package scipy.optimize and get the optimized parameters
-parameters = (minimize(cofiCostFunc_minimize,initParam,method="CG",jac=True,
+parameters = (minimize(cofi_cost_func_minimize,initParam,method="CG",jac=True,
 				   options={'maxiter':max_iter, "disp":True})).x
 
 						   
 # Matriz X y Theta
-X = parameters[0 : nJuegos*nFeat]
-X = X.reshape(nJuegos, nFeat)
-Theta = parameters[nJuegos*nFeat :]
-Theta = Theta.reshape(nUsers, nFeat)
+x = parameters[0 : n_juegos*n_feat]
+x = x.reshape(n_juegos, n_feat)
+theta = parameters[n_juegos*n_feat :]
+theta = theta.reshape(n_users, n_feat)
 	
 # Predicciones
-P_Modelos = np.dot(X, Theta.T)
+p_modelos = np.dot(x, theta.T)
 
 # Graba la matriz de predicción
-np.save('../static/datos/P_Modelos', P_Modelos)
+np.save('../static/datos/P_Modelos', p_modelos)
