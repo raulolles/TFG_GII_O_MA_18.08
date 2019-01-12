@@ -12,7 +12,7 @@ n_juegos,n_users = y.shape
 # Crea matriz similitud (Coef.Corr.Pearson)
 sim = np.corrcoef(y, rowvar=True)
 # Da valor -1 a sim donde varianza de Y sea 0 (sin volores con NaN)   
-sim[np.where(sim == np.NaN)] = -1
+sim[np.where(np.isnan(sim))] = -1
 
 # Crea matriz Predicción Filtro Colab. Productos
 p_mem_juegos = np.copy(y)
@@ -37,8 +37,13 @@ for ind_p in ind_predecir:
     suma_ddo = np.sum(rating_user * sim_juego)
     suma_dsor = np.sum(np.absolute(sim_juego))
 
-    p_mem_juegos[juego,user] = suma_ddo/suma_dsor
-	
+    if suma_dsor > 0:
+        p_mem_juegos[juego,user] = suma_ddo/suma_dsor
+
+
+p_mem_juegos[np.where(np.isnan(p_mem_juegos))] = 0
+p_mem_juegos[np.where(p_mem_juegos > 5)] = 5
+p_mem_juegos[np.where(p_mem_juegos < 0)] = 0
 
 # Guarda Matriz Pronosticos
 np.save('../static/datos/P_Mem_Juegos', p_mem_juegos)

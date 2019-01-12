@@ -69,5 +69,10 @@ theta = theta.reshape(n_users, n_feat)
 # Predicciones
 p_modelos = np.dot(x, theta.T)
 
+
+p_modelos[np.where(np.isnan(p_modelos))] = 0
+p_modelos[np.where(p_modelos > 5)] = 5
+p_modelos[np.where(p_modelos < 0)] = 0
+
 # Graba la matriz de predicción
 np.save('../static/datos/P_Modelos', p_modelos)
