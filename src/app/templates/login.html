@@ -37,15 +37,8 @@
 		<iframe height="500px" width="100%" name="iframe_a" title="zona de juego" style = "background-color: #f8f8f8; box-shadow: 3px 3px 15px gray"></iframe>
 	</div>
 	
-	<div style= "margin-top:50px; text-align:center">
-	<hr/>
-	<table>
-	<tr style = "vertical-align:top">
-    {% for juego in selecciones %}
-		{% include 'juegos_lista.html' %}
-    {% endfor %}
-	</tr>
-	</table>	
+	<div style= "margin-top:50px">
+		{% include 'include_juegos_lista.html' %}
 	</div>
 	
 {% endblock %}

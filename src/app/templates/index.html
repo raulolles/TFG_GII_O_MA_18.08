@@ -4,11 +4,12 @@
 	
 	<table>
         <tr style = "vertical-align:bottom">
-            <td><img src="{{url_for('static', filename="avatares/" + current_user.avatar + ".png")}}" width="70" height="70" alt="user avatar"/></td>
-            <td> <h2>Hi! {{ current_user.username }}</h2> </td>
+            <td style="width: 10%"><img src="{{url_for('static', filename="avatares/" + current_user.avatar + ".png")}}" width="70" height="70" alt="user avatar"/></td>
+            <td style="width: 25%"> <h2>Hi! {{ current_user.username }}</h2> </td>
+			<td style="width: 65%; text-align:right; color:gray"> <h3><i> {{ texto_cab }} </i></h3> </td>
         </tr>
     </table>
-	
+		
 	<script type="text/javascript">
 		function muestraJuego(){
 			capa = document.getElementById("capaJuego");
@@ -21,16 +22,7 @@
 		<iframe height="500px" width="100%" name="iframe_a" title="zona de juego" style = "background-color: #f8f8f8; box-shadow: 3px 3px 15px gray"></iframe>
 	</div>
 	
-	{% for seleccion in selecciones %}
-	<hr/> <h4> {{ seleccion.filtro }} </h4>
-	<table>
-	<tr style = "vertical-align:top">
-    {% for juego in seleccion.select %}		
-		{% include 'juegos_lista.html' %}
-    {% endfor %}
-	</tr>
-	</table>
-    {% endfor %}
+	{% include 'include_juegos_lista.html' %}
 
 	
 {% endblock %}
