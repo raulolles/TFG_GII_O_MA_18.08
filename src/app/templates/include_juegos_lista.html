@@ -1,3 +1,4 @@
+
 	{% for seleccion in selecciones %}
 	<hr/> <h4> {{ seleccion.filtro }} </h4>
 	<table >
@@ -20,19 +21,19 @@
 					
 					<div style = "font-size:9px; height:85px; margin-top:8px">
 						<div style = "vertical-align:top; width:50%; float:left; padding-right:7px; border-right:1px solid #D8D8D8; text-align:center">
-							<div style= "vertical-align:top; height:42px; font-size:35px; color:#e67e22; text-shadow: -1px 0 gray, 0 1px gray,
-	  1px 0 gray, 0 -1px gray"> {{ juego[7] }} </div>
-							<img src="static/{{ juego[8] }}" width="100%" alt="{{ juego[8] }}"/>
+							<div id="media{{ juego[15] }}" style= "vertical-align:top; height:42px; font-size:35px; color:#e67e22; text-shadow: -1px 0 gray, 0 1px gray,
+	  1px 0 gray, 0 -1px gray"> {{ juego[6] }} </div>
+							<img src="static/{{ juego[7] }}" width="100%" alt="{{ juego[7] }}"/>
 							<div style = "margin-top:10px; vertical-align:top">
-								<img  style = "vertical-align:top; width:9px; height:9px" src="{{url_for('static', filename="simbolos/user.png")}}" alt="total users"> {{ juego[9] }} <img/>
+								<img style = "vertical-align:top; width:9px; height:9px" src="{{url_for('static', filename="simbolos/user.png")}}" alt="total users"/> <span id="nUsersPlay{{ juego[15] }}"> {{ juego[8] }} </span>
 							</div>
 						</div>
 						<div style = "width:50%; float:right; padding-left:8px; padding-top:9px">
-							<img style = "vertical-align:top" src="{{url_for('static', filename="simbolos/star_cinco.png")}}" width="70%" alt="cinco estrellas">  {{ juego[10] }} <img/>							
-							<img style = "vertical-align:top" src="{{url_for('static', filename="simbolos/star_cuatro.png")}}" width="70%" alt="cuatro estrellas"/>  {{ juego[11] }} <img/>
-							<img style = "vertical-align:top" src="{{url_for('static', filename="simbolos/star_tres.png")}}" width="70%" alt="tres estrellas"/>  {{ juego[12] }} <img/>
-							<img style = "vertical-align:top" src="{{url_for('static', filename="simbolos/star_dos.png")}}" width="70%" alt="dos estrellas">  {{ juego[13] }} <img/>
-							<img style = "vertical-align:top" src="{{url_for('static', filename="simbolos/star_uno.png")}}" width="70%" alt="una estrella">  {{ juego[14] }} <img/>
+							<img style = "vertical-align:top" src="{{url_for('static', filename="simbolos/star_cinco.png")}}" width="70%" alt="cinco estrellas"/> <span id="5Stars{{ juego[15] }}"> {{ juego[9] }} </span>							
+							<img style = "vertical-align:top" src="{{url_for('static', filename="simbolos/star_cuatro.png")}}" width="70%" alt="cuatro estrellas"/> <span id="4Stars{{ juego[15] }}"> {{ juego[10] }} </span>
+							<img style = "vertical-align:top" src="{{url_for('static', filename="simbolos/star_tres.png")}}" width="70%" alt="tres estrellas"/> <span id="3Stars{{ juego[15] }}"> {{ juego[11] }} </span>
+							<img style = "vertical-align:top" src="{{url_for('static', filename="simbolos/star_dos.png")}}" width="70%" alt="dos estrellas"/> <span id="2Stars{{ juego[15] }}"> {{ juego[12] }} </span>
+							<img style = "vertical-align:top" src="{{url_for('static', filename="simbolos/star_uno.png")}}" width="70%" alt="una estrella"/> <span id="1Stars{{ juego[15] }}"> {{ juego[13] }} </span>
 						</div>
 	
 					</div>
@@ -60,6 +61,155 @@
 					
 				</div>
 			</div>
+			
+			{% if current_user.is_authenticated %}
+			
+				<script type="text/javascript">
+					function cambiaPuntuacion(idJuego, idUser, valor){
+						var idPunt = 'punt'+idJuego;
+						var idMedia = 'media'+idJuego;
+						var idnStarsMedia = 'nStarsMedia'+idJuego;
+						var idnUsersPlay = 'nUsersPlay'+idJuego;
+						var id5Star = '5Stars'+idJuego;
+						var id4Star = '4Stars'+idJuego;
+						var id3Star = '3Stars'+idJuego;
+						var id2Star = '2Stars'+idJuego;
+						var id1Star = '1Stars'+idJuego;
+						
+						var puntAnterior = document.getElementById(idPunt).innerHTML;
+						puntAnterior =  puntAnterior.replace(/ /g,"");
+						window.alert(puntAnterior);
+						if (puntAnterior != '--') { parseInt(puntAnterior); }
+						window.alert(puntAnterior);
+
+						var mediaAnt = parseFloat(document.getElementById(idMedia).innerHTML);
+						var nUsersPlayAnt = parseInt(document.getElementById(idnUsersPlay).innerHTML);
+						var cinStarAnt = parseInt(document.getElementById(id5Star).innerHTML);
+						var cuaStarAnt = parseInt(document.getElementById(id4Star).innerHTML);
+						var treStarAnt = parseInt(document.getElementById(id3Star).innerHTML);
+						var dosStarAnt = parseInt(document.getElementById(id2Star).innerHTML);
+						var unaStarAnt = parseInt(document.getElementById(id1Star).innerHTML);
+						var media;
+						var unaStar = unaStarAnt;
+						var dosStar = dosStarAnt;
+						var treStar = treStarAnt;
+						var cuaStar = cuaStarAnt;
+						var cinStar = cinStarAnt;
+						
+						if (puntAnterior != valor){
+							// Si puntacion Anterior == 0 -> hay un jugador más
+							// Si no -> quitamos una puntación a la anterior
+							if (puntAnterior == '--') { nUsersPlayAnt = nUsersPlayAnt + 1; }
+							
+							// Si valor == 0 -> hay un jugador menos y quita la estrella
+							if (valor == '--') { 
+								nUsersPlayAnt = nUsersPlayAnt - 1;
+								if (puntAnterior == 1) { unaStar = unaStarAnt - 1; }
+								else if (puntAnterior == 2) { dosStar = dosStarAnt - 1; }
+								else if (puntAnterior == 3) { treStar = treStarAnt - 1; }
+								else if (puntAnterior == 4) { cuaStar = cuaStarAnt - 1; }
+								else if (puntAnterior == 5) { cinStar = cinStarAnt - 1; }								
+							}
+							else if (valor == 1) { 
+								unaStar = unaStarAnt + 1;
+								if (puntAnterior == 2) { dosStar = dosStarAnt - 1; }
+								else if (puntAnterior == 3) { treStar = treStarAnt - 1; }
+								else if (puntAnterior == 4) { cuaStar = cuaStarAnt - 1; }
+								else if (puntAnterior == 5) { cinStar = cinStarAnt - 1; }								
+							}
+							else if (valor == 2) { 
+								dosStar = dosStarAnt + 1;
+								if (puntAnterior == 1) { unaStar = unaStarAnt - 1; }
+								else if (puntAnterior == 3) { treStar = treStarAnt - 1; }
+								else if (puntAnterior == 4) { cuaStar = cuaStarAnt - 1; }
+								else if (puntAnterior == 5) { cinStar = cinStarAnt - 1; }									
+							}
+							else if (valor == 3) { 
+								treStar = treStarAnt + 1; 
+								if (puntAnterior == 1) { unaStar = unaStarAnt - 1; }
+								else if (puntAnterior == 2) { dosStar = dosStarAnt - 1; }
+								else if (puntAnterior == 4) { cuaStar = cuaStarAnt - 1; }
+								else if (puntAnterior == 5) { cinStar = cinStarAnt - 1; }									
+							}
+							else if (valor == 4) { 
+								cuaStar = cuaStarAnt + 1; 
+								if (puntAnterior == 1) { unaStar = unaStarAnt - 1; }
+								else if (puntAnterior == 2) { dosStar = dosStarAnt - 1; }
+								else if (puntAnterior == 3) { treStar = treStarAnt - 1; }
+								else if (puntAnterior == 5) { cinStar = cinStarAnt - 1; }									
+							}
+							else if (valor == 5) { 
+								cinStar = cinStarAnt + 1; 
+								if (puntAnterior == 1) { unaStar = unaStarAnt - 1; }
+								else if (puntAnterior == 2) { dosStar = dosStarAnt - 1; }
+								else if (puntAnterior == 3) { treStar = treStarAnt - 1; }
+								else if (puntAnterior == 4) { cuaStar = cuaStarAnt - 1; }
+								}
+							
+							media = ((cinStar*5 + cuaStar*4 + treStar*3 + dosStar*2 + unaStar)/nUsersPlayAnt);
+							media = media.toFixed(1);
+							
+							document.getElementById(idnUsersPlay).innerHTML = nUsersPlayAnt;
+							document.getElementById(idPunt).innerHTML = valor;
+							document.getElementById(idMedia).innerHTML = media;
+							document.getElementById(id5Star).innerHTML = cinStar;
+							document.getElementById(id4Star).innerHTML = cuaStar;
+							document.getElementById(id3Star).innerHTML = treStar;
+							document.getElementById(id2Star).innerHTML = dosStar;
+							document.getElementById(id1Star).innerHTML = unaStar;
+							
+							
+							
+							// Actualiza tablas R, Y
+						}
+						
+					}
+				</script>
+	
+				<div style = "margin-top:12px; padding-left:6px; padding-right:6px; background-color: #f8f8f8; color:gray; height:73px; width:150px; box-shadow: 3px 3px 6px gray">
+					<div style = "font-size:11px; height:40px; border-bottom:1px solid #D8D8D8">
+						<div style = "width:70%; padding-top:11px; padding-left:9px; float:left; color:#2980B9">
+							tu valoración
+						</div>					
+						<div id="punt{{ juego[15] }}" style = "width:30%; float:right; padding-right:7px; text-align:right; font-size:25px; color:#e67e22">{{ juego[14] }}</div>
+	
+					</div>
+					
+					<div style="margin-top:5px; margin-left:4px">
+						<div style="float:left; width:16%">
+							<button class="btn btn-default btn-xs" onClick="cambiaPuntuacion({{ juego[15] }}, {{ juego[16] }}, '--')">
+								-
+							</button>
+						</div>
+						<div style="float:left; width:16%">
+							<button class="btn btn-default btn-xs" onClick="cambiaPuntuacion({{ juego[15] }}, {{ juego[16] }}, '1')">
+								1
+							</button>
+						</div>
+						<div style="float:left; width:16%">						
+							<button class="btn btn-default btn-xs" onClick="cambiaPuntuacion({{ juego[15] }}, {{ juego[16] }}, '2')">
+								2
+							</button>
+						</div>
+						<div style="float:left; width:16%">
+							<button class="btn btn-default btn-xs" onClick="cambiaPuntuacion({{ juego[15] }}, {{ juego[16] }}, '3')">
+								3
+							</button>
+						</div>
+						<div style="float:left; width:16%">
+							<button class="btn btn-default btn-xs" onClick="cambiaPuntuacion({{ juego[15] }}, {{ juego[16] }}, '4')">
+								4
+							</button>
+						</div>
+						<div style="float:left; width:16%">
+							<button class="btn btn-default btn-xs" onClick="cambiaPuntuacion({{ juego[15] }}, {{ juego[16] }}, '5')">
+								5
+							</button>
+						</div>
+					</div>
+				</div>
+			{% endif %}
+			
 		</td>
 		
     {% endfor %}
