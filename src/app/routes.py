@@ -1,11 +1,13 @@
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, g
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, CambioPuntuacionForm
+from app.forms import LoginForm, RegistrationForm, SearchForm
 from app.models import User
-from app.filtros.selectOfertas import select_predicciones, select_favoritos, select_aleatorio, select_mejor_valorados, select_mas_jugados, actualizaSelec
+from app.filtros.selectOfertas import select_predicciones, select_favoritos, select_aleatorio, select_mejor_valorados, select_mas_jugados, actualizaSelec, select_busqueda
 from app.filtros.actualizaFiltros import actualiza_filtros, actualiza_yr
+from datetime import datetime
+import copy
 import numpy as np
 
 selec = list()
@@ -28,15 +30,18 @@ def index():
 # Si el usuario está logeado selecciona ofertas
 def index2():
 	global selec
+	jg_ifrm = None
 	if request.args.get('juego') != None:
 		juego = int(request.args.get('juego'))
 		user = int(request.args.get('user'))
 		valor = int(request.args.get('valor'))
-		print('-------------------------', juego, user, valor)
 		actualiza_yr(juego, user, valor)
+		if request.args.get('jg_ifrm') != "":
+			jg_ifrm = int(request.args.get('jg_ifrm'))
+			
 		selec = actualizaSelec(juego, valor, selec)
 	texto = '... pensamos que te gustará'
-	return render_template('index.html', title='Home', selecciones=selec, texto_cab=texto)
+	return render_template('index.html', title='Home', selecciones=selec, texto_cab=texto, jg_ifrm=jg_ifrm)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -77,14 +82,21 @@ def favoritos():
 # Si el usuario está logeado selecciona ofertas
 def favoritos2():
 	global selec
+	jg_ifrm = None
 	if request.args.get('juego') != None:
 		juego = int(request.args.get('juego'))
 		user = int(request.args.get('user'))
 		valor = int(request.args.get('valor'))
 		actualiza_yr(juego, user, valor)
+		if request.args.get('jg_ifrm') != "":
+			jg_ifrm = int(request.args.get('jg_ifrm'))
+
 		selec = actualizaSelec(juego, valor, selec)
 	texto='... tus juegos favoritos'
-	return render_template('index.html', title='Favoritos', selecciones=selec, texto_cab=texto)
+	
+	page = request.args.get('page', 1, type=int)
+	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec, 'favoritos2')
+	return render_template('index.html', title='Favoritos', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag=page, total_pag=total_pag, jg_ifrm=jg_ifrm)
 
 
 @app.route('/mas_jugados', methods=['GET', 'POST'])
@@ -103,14 +115,21 @@ def mas_jugados():
 @login_required
 def mas_jugados2():
 	global selec
+	jg_ifrm = None
 	if request.args.get('juego') != None:
 		juego = int(request.args.get('juego'))
 		user = int(request.args.get('user'))
 		valor = int(request.args.get('valor'))
 		actualiza_yr(juego, user, valor)
+		if request.args.get('jg_ifrm') != "":
+			jg_ifrm = int(request.args.get('jg_ifrm'))
+			
 		selec = actualizaSelec(juego, valor, selec)
 	texto='... los más jugados por todos los usuarios'
-	return render_template('index.html', title='Mas Jugados', selecciones=selec, texto_cab=texto)
+	
+	page = request.args.get('page', 1, type=int)
+	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec, 'mas_jugados2')
+	return render_template('index.html', title='Mas Jugados', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag=page, total_pag=total_pag, jg_ifrm=jg_ifrm)
 	
 
 @app.route('/mejor_valorados', methods=['GET', 'POST'])
@@ -129,14 +148,56 @@ def mejor_valorados():
 @login_required
 def mejor_valorados2():
 	global selec
+	jg_ifrm = None
 	if request.args.get('juego') != None:
 		juego = int(request.args.get('juego'))
 		user = int(request.args.get('user'))
 		valor = int(request.args.get('valor'))
 		actualiza_yr(juego, user, valor)
+		if request.args.get('jg_ifrm') != "":
+			jg_ifrm = int(request.args.get('jg_ifrm'))
+			
 		selec = actualizaSelec(juego, valor, selec)
 	texto='... los mejor valorados por todos los usuarios'
-	return render_template('index.html', title='Mejor Valorados', selecciones=selec, texto_cab=texto)
+	
+	page = request.args.get('page', 1, type=int)
+	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec,'mejor_valorados2')
+	return render_template('index.html', title='Mejor Valorados', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
+
+	
+@app.route('/busqueda', methods=['GET', 'POST'])
+@login_required
+def busqueda():
+	global selec
+	id_user = current_user.id - 1
+	palabra_busq = request.args.get('q')
+	text_filtro = 'Busqueda: ' + palabra_busq
+	select_busq = select_busqueda(id_user, palabra_busq)
+	selecciones =[{'filtro': text_filtro, 'select':select_busq}]
+	selec = selecciones
+	texto='... los resultados de tu búsqueda'
+	return redirect(url_for('busqueda2'))
+	
+
+@app.route('/busqueda2', methods=['GET', 'POST'])
+@login_required
+def busqueda2():
+	global selec
+	jg_ifrm = None
+	if request.args.get('juego') != None:
+		juego = int(request.args.get('juego'))
+		user = int(request.args.get('user'))
+		valor = int(request.args.get('valor'))
+		actualiza_yr(juego, user, valor)
+		if request.args.get('jg_ifrm') != "":
+			jg_ifrm = int(request.args.get('jg_ifrm'))
+
+		selec = actualizaSelec(juego, valor, selec)
+	texto= ' ... los resultados de tu búsqueda'
+	page = request.args.get('page', 1, type=int)
+	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec,'mejor_valorados2')
+	
+	return render_template('index.html', title='Busqueda', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag=page, total_pag=total_pag, jg_ifrm=jg_ifrm)
 	
 	
 @app.route('/logout')
@@ -162,3 +223,33 @@ def register():
 		flash('Congratulations, you are now a registered user!')
 		return redirect(url_for('login'))
 	return render_template('register.html', title='Register', form=form)
+
+
+	
+def calc_paginacion(page, selec, origen):
+	inc_selec = (page-1)*app.config['SEL_POR_PAG']
+	fin_selec = page*app.config['SEL_POR_PAG']
+	selecciones = copy.deepcopy(selec)
+	selecciones[0]['select'] = selec[0]['select'][inc_selec: fin_selec]
+	
+	if len(selec[0]['select']) % app.config['SEL_POR_PAG'] == 0:
+		total_pag = len(selec[0]['select']) // app.config['SEL_POR_PAG']
+	else:
+		total_pag = len(selec[0]['select']) // app.config['SEL_POR_PAG'] + 1
+		
+	if page > 1:
+		pag_ante = page - 1
+	else:
+		pag_ante = page
+		
+	if page < total_pag:
+		pag_post = page+1
+	else:
+		pag_post = page
+		
+	next_url = url_for(origen, page=pag_post)
+	prev_url = url_for(origen, page=pag_ante)
+	inic_url = url_for(origen, page=1)
+	fin_url = url_for(origen, page=total_pag)
+	
+	return next_url, prev_url, inic_url, fin_url, total_pag, selecciones

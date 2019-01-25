@@ -1,10 +1,10 @@
-
 	{% for seleccion in selecciones %}
 
-	<div style="float:left; width:100%; margin-top:15px; margin-bottom:10px">
+	<div style="float:left; width:100%; margin-top:15px; margin-bottom:10px; vertical-align:bottom">
 		<hr/>
 		<h3> {{ seleccion.filtro }} </h3>
 	</div>
+	
     {% for juego in seleccion.select %}		
 
 		<div style = "float:left; color:gray; width:550px; height:150px; margin-top:15px; margin-right:20px; box-shadow: 3px 3px 6px gray">
@@ -12,7 +12,7 @@
 			<div id="juego{{juego[15]}}" >
 			
 				<div style="width:100px; height:150px; float:left">
-					<a href="http://archive.org/details/{{ juego[5] }}" target="iframe_a" onClick="muestraJuego({{juego}})">
+					<a href="http://archive.org/details/{{ juego[5] }}" target="iframe_a" onClick="muestraJuego({{juego[15]}}, {{selecciones}})">
 						<img style="width:100px; height:150px" src="http://archive.org/services/img/{{ juego[5] }}" alt="juego {{ juego[5] }}">
 					</a>
 				</div>
@@ -20,7 +20,7 @@
 				<div style="width:150px; height:150px; float:left; margin-left:25px; margin-top:10px; margin-bottom:5px" >
 					<div style="height:55%">
 						<div>
-							<a href="http://archive.org/details/{{ juego[5] }}" target="iframe_a" onClick="muestraJuego({{juego}})"> 
+							<a href="http://archive.org/details/{{ juego[5] }}" target="iframe_a" onClick="muestraJuego({{juego[15]}}, {{selecciones}})"> 
 							{{ juego[0] }} </a>
 						</div>
 						<div style = "font-size:10px">
@@ -84,7 +84,9 @@
 							tu valoración
 						</div>					
 						<div style = "width:30%; float:right; padding-right:7px; text-align:right; font-size:25px; color:#e67e22">
-							<form name="form" acction="" method="GET">
+							<form name="form{{juego[15]}}" id="form{{juego[15]}} acction="" method="GET">
+								<input type="text" name="page" id="page" value="{{ pag }}" style="display:none">
+								<input type="text" name="jg_ifrm" id="jg_ifrm" valor="" style="display:none">
 								<input type="text" name="juego" id="juego" value="{{ juego[15] }}" style="display:none">
 								<input type="text" name="user" id="user" value="{{ juego[16] }}" style="display:none">
 								<select onchange="this.form.submit()" name="valor" id="valor{{ juego15 }}" style="border:none">
@@ -108,3 +110,4 @@
     {% endfor %}
 
     {% endfor %}
+	

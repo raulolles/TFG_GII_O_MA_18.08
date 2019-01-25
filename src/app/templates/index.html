@@ -3,24 +3,45 @@
 {% block app_content %}
 
 	<script type="text/javascript">
-		function muestraJuego(jgo){
+		function muestraJuego(jgo, selecciones){
 			capa = document.getElementById("capaJuego");
 			capa.style.display='block';
 			window.scroll(0,70);
 			
-			var juego = 'juego'+jgo[15]
+			var juego = 'juego'+jgo;
+			var form;
 			document.getElementById("juego").innerHTML = document.getElementById(juego).innerHTML;
-			document.getElementById("identJuego").innerHTML = jgo[15];
-			document.getElementById("identUser").innerHTML = jgo[16];
+			//document.getElementById(juego).innerHTML = document.getElementById("juego").innerHTML;
+			document.getElementById("identJuego").innerHTML = jgo;
+			//document.getElementById("seguir").style.display = 'none';
+			//oculta_btn()
+			
+			for (x=0; x < selecciones.length; x++){
+				for (i=0; x<selecciones[x]['select'].length; i++){
+					form = 'form'+selecciones[x]['select'][i][15];
+					document.forms[form]['jg_ifrm'].value = jgo;
+					if (jgo == selecciones[x]['select'][i][15]) {
+						document.getElementById("iframe_a").src = 'http://archive.org/details/' + selecciones[x]['select'][i][5]
+					}
+				}
+			}			
 		}
 	</script>
 	
 	<script>
-		function escondeJuego(){
+		function escondeJuego(selecciones){
 			capa = document.getElementById("capaJuego");
 			capa.style.display='none';
+			
+			for (x=0; x < selecciones.length; x++){
+				for (i=0; x<selecciones[x]['select'].length; i++){
+					form = 'form'+selecciones[x]['select'][i][15];
+					document.forms[form]['jg_ifrm'].value = '';
+				}
+			}				
 		}
 	</script>	
+	
 	
 	<div style="margin-bottom:80px">
 		<div style="float:left"><img src="{{url_for('static', filename="avatares/" + current_user.avatar + ".png")}}" width="70" height="70" alt="user avatar"/></div>
@@ -30,24 +51,42 @@
 	
 	<div id="capaJuego" style="display:none">
 		<hr/>
-		<iframe height="500px" width="100%" name="iframe_a" title="zona de juego" style = "background-color: #f8f8f8; box-shadow: 3px 3px 15px gray">
+		<iframe height="500px" width="100%" id="iframe_a" name="iframe_a" title="zona de juego" style = "background-color: #f8f8f8; box-shadow: 3px 3px 15px gray">
 		</iframe>
 		
 		<div style = "height:150px; margin-top:10px; margin-bottom:20px">
 			<div id="juego" style="width:550px" ></div>
 			
 			<div style="float:right; vertical-align:top; margin-top:10px">
-				<button type="button" class="btn btn-default" aria-label="Left Align" onClick="escondeJuego()">
+				<button type="button" class="btn btn-default" aria-label="Left Align" onClick="escondeJuego({{ selecciones }})">
 					<span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span> Cerrar Juego
 				</button>
 				<div id="identJuego" style="color:black; display:none"></div>
-				<div id="identUser" style="color:black; display:none"></div>
+				<div id="identUser" style="color:black"></div>
 			</div>				
 		</div>
 		
 	</div>
 	
-	{% include 'include_juegos_lista.html' %}
+	{% if jg_ifrm %}
+		<a id="click_muestra" onclick="muestraJuego({{ jg_ifrm }}, {{selecciones}})" style="display:none"> ig_ifrm </a>
+		
+		<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+		
+		<script type="text/javascript">
+			$(document).ready(function(){ $("#click_muestra").click(); });
+		</script>
+	{% endif %}
 
+	
+	<div style="float:left; margin-bottom:40px">
+	{% include 'include_juegos_lista.html' %}
+	</div>
+	
+	{% if request.path != "/index2" %}
+	{% if current_user.is_authenticated %}
+		{% include 'include_paginacion.html' %}	
+	{% endif %}
+	{% endif %}
 
 {% endblock %}
