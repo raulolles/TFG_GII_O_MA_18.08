@@ -43,18 +43,18 @@
 	</script>	
 	
 	
-	<div style="margin-bottom:80px">
+	<div style="margin-bottom:40px">
 		<div style="float:left"><img src="{{url_for('static', filename="avatares/" + current_user.avatar + ".png")}}" width="70" height="70" alt="user avatar"/></div>
 		<div style="float:left"> <h2>Hi! {{ current_user.username }}</h2> </div>
 		<div style="float:right; color:gray"> <h3><i> {{ texto_cab }} </i></h3> </div>
     </div>
 	
-	<div id="capaJuego" style="display:none">
+	<div id="capaJuego" style="display:none; margin-top:80px">
 		<hr/>
 		<iframe height="500px" width="100%" id="iframe_a" name="iframe_a" title="zona de juego" style = "background-color: #f8f8f8; box-shadow: 3px 3px 15px gray">
 		</iframe>
 		
-		<div style = "height:150px; margin-top:10px; margin-bottom:20px">
+		<div style = "height:150px; margin-top:10px">
 			<div id="juego" style="width:550px" ></div>
 			
 			<div style="float:right; vertical-align:top; margin-top:10px">

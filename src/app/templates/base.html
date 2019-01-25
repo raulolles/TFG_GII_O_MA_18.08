@@ -23,14 +23,62 @@
                     {% else %}
                     <li><a href="{{ url_for('index') }}">Home</a></li>
 					<li><a href="{{ url_for('favoritos') }}">Favoritos</a></li>
-					<li><a href="{{ url_for('mas_jugados') }}">Mas Jugados</a></li>
-					<li><a href="{{ url_for('mejor_valorados') }}">Mejor Valorados</a></li>
+					
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						  en Retrogaming  <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
+						</a>
+						
+						<div class="dropdown-menu" style="color:#2980B9" aria-labelledby="navbarDropdownMenuLink1">
+						  <p style="background-color:#fafafa; padding:10px"> Todos los Juegos</p>
+						  <p><a style="color:gray; padding:5px; padding-left:15px" class="dropdown-item" href="{{ url_for('mas_jugados_todos') }}">Mas Jugados</a></p>
+						  <p><a style="color:gray; padding:5px; padding-left:15px" class="dropdown-item" href="{{ url_for('mejor_valorados_todos') }}">Mejor Valorados</a></p>
+						  
+						  <p style="border-top:1px solid #E8E8E8; background-color:#fafafa; padding:10px">Ya has jugado</p>
+						  <p><a style="color:gray; padding:5px; padding-left:15px" class="dropdown-item" href="{{ url_for('mas_jugados_ya_jugado') }}">Mas Jugados</a></p>
+						  <p><a style="color:gray; padding:5px; padding-left:15px" class="dropdown-item" href="{{ url_for('mejor_valorados_ya_jugado') }}">Mejor Valorados</a></p>
+						  
+						  <p style="border-top:1px solid #E8E8E8; background-color:#fafafa; padding:10px">No has jugado</p>						  
+						  <p><a style="color:gray; padding:5px; padding-left:15px" class="dropdown-item" href="{{ url_for('mas_jugados_no_jugado') }}">Mas Jugados</a></p>
+						  <p><a style="color:gray; padding:5px; padding-left:15px" class="dropdown-item" href="{{ url_for('mejor_valorados_no_jugado') }}">Mejor Valorados</a></p>						  
+						</div>
+					</li>					
+					
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						  en Archive.org  <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
+						</a>
+						
+						<div class="dropdown-menu" style="color:#2980B9" aria-labelledby="navbarDropdownMenuLink2">
+						  <p style="background-color:#fafafa; padding:10px"> Todos los Juegos</p>
+						  <p><a style="color:gray; padding:5px; padding-left:15px" class="dropdown-item" href="{{ url_for('mas_vistos_archive_todos') }}">Mas Vistos</a></p>
+						  <p><a style="color:gray; padding:5px; padding-left:15px" class="dropdown-item" href="{{ url_for('mas_stars_archive_todos') }}">Mas Stars</a></p>
+						  <p><a style="color:gray; padding:5px; padding-left:15px" class="dropdown-item" href="{{ url_for('mas_comments_archive_todos') }}">Mas Comments</a></p>
+						  
+						  <p style="border-top:1px solid #E8E8E8; background-color:#fafafa; padding:10px">Ya has jugado</p>
+						  <p><a style="color:gray; padding:5px; padding-left:15px" class="dropdown-item" href="{{ url_for('mas_vistos_archive_ya_jugado') }}">Mas Vistos</a></p>
+						  <p><a style="color:gray; padding:5px; padding-left:15px" class="dropdown-item" href="{{ url_for('mas_stars_archive_ya_jugado') }}">Mas Stars</a></p>
+						  <p><a style="color:gray; padding:5px; padding-left:15px" class="dropdown-item" href="{{ url_for('mas_comments_archive_ya_jugado') }}">Mas Comments</a></p>
+						  
+						  <p style="border-top:1px solid #E8E8E8; background-color:#fafafa; padding:10px">No has jugado</p>
+						  <p><a style="color:gray; padding:5px; padding-left:15px" class="dropdown-item" href="{{ url_for('mas_vistos_archive_no_jugado') }}">Mas Vistos</a></p>
+						  <p><a style="color:gray; padding:5px; padding-left:15px" class="dropdown-item" href="{{ url_for('mas_stars_archive_no_jugado') }}">Mas Stars</a></p>
+						  <p><a style="color:gray; padding:5px; padding-left:15px" class="dropdown-item" href="{{ url_for('mas_comments_archive_no_jugado') }}">Mas Comments</a></p>					  
+						</div>
+
+					</li>
+					
                     {% endif %}
                 </ul>
+				
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_anonymous %}
                     <li><a href="{{ url_for('login') }}">Login</a></li>
                     {% else %}
+					<li><form class="navbar-form navbar-left" method="get" action="{{ url_for('busqueda') }}">
+                        <input class="form-control mr-sm-2" placeholder="Búsqueda" type="text" name="q" id="q">
+					</form>
+					</li>
 					<li><a href="{{ url_for('logout') }}">Logout</a></li>
                     {% endif %}
                 </ul>

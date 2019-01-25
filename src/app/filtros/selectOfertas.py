@@ -1,6 +1,8 @@
 import numpy as np
+import pandas as pd
 from pandas import read_table
 import random
+import jellyfish as jel
 
 def calcula_estad_juego(juego,y,r):
 	tabla_estad = list()
@@ -82,16 +84,7 @@ def select_de_matriz(y,p,r,id_user,unid_select,items):
 	l = l[l[:,2].argsort()]       # ordena la matriz por P
 	l = np.flipud(l)              # voltea la matriz para ofrecer en orden correcto
 
-	seleccion = list()
-	linea_select_a = list()
-	linea_select_b = list()
-	
-	for i in range (unid_select):
-		juego = int(l[i][0])
-		linea_select_a = items.loc[juego].values.tolist()
-		linea_select_b = calcula_estad_juego(juego,y,r)
-		valor = int(y[juego,id_user])
-		seleccion.append(linea_select_a + linea_select_b + [valor, juego, id_user])
+	seleccion = ejecuta_seleccion (id_user, l, items, y, r, unid_select)
 		
 	return seleccion
 	
@@ -127,7 +120,7 @@ def select_aleatorio():
 
 	
 def select_favoritos(id_user):
-	unid_select = 6
+	unid_select = 100
 	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas()
 	r0 = r[:,id_user]
 	
@@ -143,23 +136,13 @@ def select_favoritos(id_user):
 	l = l[l[:,2].argsort()]       # ordena la matriz por Y
 	l = np.flipud(l)              # voltea la matriz para ofrecer en orden correcto
 
-	seleccion = list()
-	linea_select_a = list()
-	linea_select_b = list()
-	
-	for i in range (unid_select):
-		juego = int(l[i][0])
-		linea_select_a = items.loc[juego].values.tolist()
-		linea_select_b = calcula_estad_juego(juego,y,r)
-		valor = int(y[juego,id_user])
-		
-		seleccion.append(linea_select_a + linea_select_b + [valor, juego, id_user])
+	seleccion = ejecuta_seleccion (id_user, l, items, y, r, unid_select)
 		
 	return seleccion
 
 	
-def select_mas_jugados(id_user):
-	unid_select = 6
+def select_mas_jugados(id_user, jugado):
+	unid_select = 100
 	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas()
 	r0 = r[:,id_user]
 	
@@ -171,25 +154,21 @@ def select_mas_jugados(id_user):
 	l = l.T
 	
 	# Ordena la matriz
+	if jugado == 0:
+		l = l[np.where(l[:,1] == 0)]  # deja en la matriz los juegos no jugados
+	elif jugado == 1:
+		l = l[np.where(l[:,1] == 1)]  # deja en la matriz los juegos si jugados
+
 	l = l[l[:,2].argsort()]
 	l = np.flipud(l)
 	
-	seleccion = list()
-	linea_select_a = list()
-	linea_select_b = list()
+	seleccion = ejecuta_seleccion (id_user, l, items, y, r, unid_select)
 	
-	for i in range (unid_select):
-		juego = int(l[i][0])
-		linea_select_a = items.loc[juego].values.tolist()
-		linea_select_b = calcula_estad_juego(juego,y,r)
-		valor = int(y[juego,id_user])
-		
-		seleccion.append(linea_select_a + linea_select_b + [valor, juego, id_user])
-		
 	return seleccion
+
 	
-def select_mejor_valorados(id_user):
-	unid_select = 6
+def select_mejor_valorados(id_user, jugado):
+	unid_select = 100
 	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas()
 	r0 = r[:,id_user]
 	
@@ -203,13 +182,85 @@ def select_mejor_valorados(id_user):
 	l = l.T
 	
 	# Ordena la matriz
+	if jugado == 0:
+		l = l[np.where(l[:,1] == 0)]  # deja en la matriz los juegos no jugados
+	elif jugado == 1:
+		l = l[np.where(l[:,1] == 1)]  # deja en la matriz los juegos si jugados
+		
 	l = l[l[:,2].argsort()]
 	l = np.flipud(l)
 	
+	seleccion = ejecuta_seleccion (id_user, l, items, y, r, unid_select)
+		
+	return seleccion
+
+
+def select_archive(id_user,columna,jugado):
+	unid_select = 200
+	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas()
+	r0 = r[:,id_user]
+	
+	# Crea una matriz en la que se guardan los indices, R0 y suma juegos
+	datos = pd.to_numeric(items[columna].tolist())
+
+	ind = range(0, len(r0))
+	l = np.concatenate((ind, r0, datos))
+	l = l.reshape(3, len(r0))
+	l = l.T
+	
+	# Ordena la matriz
+	if jugado == 0:
+		l = l[np.where(l[:,1] == 0)]  # deja en la matriz los juegos no jugados
+	elif jugado == 1:
+		l = l[np.where(l[:,1] == 1)]  # deja en la matriz los juegos si jugados
+		
+	l = l[l[:,2].argsort()]
+	l = np.flipud(l)
+	
+	seleccion = ejecuta_seleccion (id_user, l, items, y, r, unid_select)
+		
+	return seleccion
+
+	
+def select_busqueda(id_user, palabra_busq):
+	unid_select = 100
+	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas()
+	r0 = r[:,id_user]
+	
+	# Crea lista con distancia (Levenshtein )
+	distancia = list()
+	for i in range(len(r0)):
+		palabra = items.loc[i][0]
+		dist_min = np.inf
+		for p in palabra.split():
+			dist = jel.levenshtein_distance(palabra_busq, p)
+			if dist < dist_min:
+				dist_min = dist
+		distancia.append(dist_min)
+
+	# Crea una matriz en la que se guardan los indices, R0 y distancia
+	ind = range(0, len(r0))
+	l = np.concatenate((ind, r0, distancia))
+	l = l.reshape(3, len(r0))
+	l = l.T
+	
+	# Ordena la matriz
+	l = l[l[:,2].argsort()]
+	#l = np.flipud(l)
+	
+	seleccion = ejecuta_seleccion (id_user, l, items, y, r, unid_select)
+		
+	return seleccion
+
+	
+def ejecuta_seleccion (id_user, l, items, y, r, unid_select):
 	seleccion = list()
 	linea_select_a = list()
 	linea_select_b = list()
-	
+
+	if unid_select > len(l):
+		unid_select = len(l)
+		
 	for i in range (unid_select):
 		juego = int(l[i][0])
 		linea_select_a = items.loc[juego].values.tolist()
@@ -219,8 +270,8 @@ def select_mejor_valorados(id_user):
 		seleccion.append(linea_select_a + linea_select_b + [valor, juego, id_user])
 		
 	return seleccion
-
 	
+
 def actualizaSelec(id_juego, valor, seleccion_total):
 	# Recorre todas las selecciones que incluya el total
 	for slc_parcial in seleccion_total:
