@@ -2,7 +2,8 @@
 
 {% block app_content %}
 	<div class="pager">
-    <h2>Sign In</h2>
+    <h2>Iniciar Sesión</h2>
+	
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>
@@ -22,20 +23,36 @@
         <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
         <p>{{ form.submit() }}</p>
     </form>
-    <p>New User? <a href="{{ url_for('register') }}">Click to Register!</a></p>
+	
+	<br/>
+    <p>Nuevo Usuario? <a href="{{ url_for('register') }}">Click para Registrarse!</a></p>
 	</div>
 
 	<script type="text/javascript">
-		function muestraJuego(){
+		function muestraJuego(jgo){
 			capa = document.getElementById("capaJuego");
 			capa.style.display='block'
 			window.scroll(0,300);
 		}
 	</script>
 	
+	<script>
+		function escondeJuego(){
+			capa = document.getElementById("capaJuego");
+			capa.style.display='none';
+		}
+	</script>	
+	
 	<div id="capaJuego" style="display:none">
 		<hr/>
 		<iframe height="500px" width="100%" name="iframe_a" title="zona de juego" style = "background-color: #f8f8f8; box-shadow: 3px 3px 15px gray"></iframe>
+
+		<div style="float:right; vertical-align:top; margin-top:10px">
+			<button type="button" class="btn btn-default" aria-label="Left Align" onClick="escondeJuego()">
+				<span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span> Cerrar Juego
+			</button>
+		</div>	
+
 	</div>
 	
 	<div style= "margin-top:50px">
