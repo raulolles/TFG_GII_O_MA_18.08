@@ -8,7 +8,7 @@ def calcula_estad_juego(juego,y,r):
 	tabla_estad = list()
 	
 	y_juego = y[juego,:]
-	users_jugado = np.sum(r[juego,:])
+	users_jugado = int(np.sum(r[juego,:]))
 	puntuacion = np.sum(y_juego)
 	puntuacion_media = puntuacion/users_jugado
 	imagen_punt = imagen_puntuacion(puntuacion_media)
@@ -16,8 +16,6 @@ def calcula_estad_juego(juego,y,r):
 	tabla_estad.append(str("{:.1f}".format(puntuacion_media)))
 	tabla_estad.append(imagen_punt)
 	tabla_estad.append(users_jugado)
-	
-	y_jugados = y[juego,:]
 	
 	tabla_estad.append(len(np.where(y_juego ==5)[0]))
 	tabla_estad.append(len(np.where(y_juego ==4)[0]))
@@ -74,17 +72,11 @@ def select_de_matriz(y,p,r,id_user,unid_select,items):
 	r0 = r[:,id_user]
 	# Crea una matriz en la que se guardan los indices, R0 y P0
 	p0= p[:,id_user]
-	ind = range(0, len(r0))
-	l = np.concatenate((ind, r0, p0))
-	l = l.reshape(3, len(r0))
-	l = l.T
-
-	# Selecciona valores y Ordena la matriz
-	l = l[np.where(l[:,1] == 0)]  # deja en la matriz los juegos no jugados
-	l = l[l[:,2].argsort()]       # ordena la matriz por P
-	l = np.flipud(l)              # voltea la matriz para ofrecer en orden correcto
-
-	seleccion = ejecuta_seleccion (id_user, l, items, y, r, unid_select)
+	
+	jugado = 0
+	
+	tabla_slc = crea_tabla_slc(p0, r0, True, jugado)	
+	seleccion = ejecuta_seleccion (id_user, items, y, r, unid_select, tabla_slc)
 		
 	return seleccion
 	
@@ -92,7 +84,6 @@ def select_de_matriz(y,p,r,id_user,unid_select,items):
 def select_predicciones(id_user):
 	unid_select = 6
 	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas()
-	r0 = r[:,id_user]
 
 	select_users = select_de_matriz(y,p_mem_users,r,id_user,unid_select,items)	
 	select_juegos = select_de_matriz(y,p_mem_juegos,r,id_user,unid_select,items)
@@ -126,17 +117,11 @@ def select_favoritos(id_user):
 	
 	# Crea una matriz en la que se guardan los indices, R0 y P0
 	y0= y[:,id_user]
-	ind = range(0, len(r0))
-	l = np.concatenate((ind, r0, y0))
-	l = l.reshape(3, len(r0))
-	l = l.T
-
-	# Selecciona valores y Ordena la matriz
-	l = l[np.where(l[:,1] == 1)]  # deja en la matriz los juegos sí jugados
-	l = l[l[:,2].argsort()]       # ordena la matriz por Y
-	l = np.flipud(l)              # voltea la matriz para ofrecer en orden correcto
-
-	seleccion = ejecuta_seleccion (id_user, l, items, y, r, unid_select)
+	
+	jugado = 1
+	
+	tabla_slc = crea_tabla_slc(y0, r0, True, jugado)	
+	seleccion = ejecuta_seleccion (id_user, items, y, r, unid_select, tabla_slc)
 		
 	return seleccion
 
@@ -148,21 +133,9 @@ def select_mas_jugados(id_user, jugado):
 	
 	# Crea una matriz en la que se guardan los indices, R0 y suma juegos
 	veces_jug = r.sum(axis = 1)
-	ind = range(0, len(r0))
-	l = np.concatenate((ind, r0, veces_jug))
-	l = l.reshape(3, len(r0))
-	l = l.T
-	
-	# Ordena la matriz
-	if jugado == 0:
-		l = l[np.where(l[:,1] == 0)]  # deja en la matriz los juegos no jugados
-	elif jugado == 1:
-		l = l[np.where(l[:,1] == 1)]  # deja en la matriz los juegos si jugados
 
-	l = l[l[:,2].argsort()]
-	l = np.flipud(l)
-	
-	seleccion = ejecuta_seleccion (id_user, l, items, y, r, unid_select)
+	tabla_slc = crea_tabla_slc(veces_jug, r0, True, jugado)	
+	seleccion = ejecuta_seleccion (id_user, items, y, r, unid_select, tabla_slc)
 	
 	return seleccion
 
@@ -176,21 +149,8 @@ def select_mejor_valorados(id_user, jugado):
 	valor_medio = y.sum(axis = 1) / r.sum(axis = 1)
 	valor_medio[np.where(np.isnan(valor_medio))] = 0
 
-	ind = range(0, len(r0))
-	l = np.concatenate((ind, r0, valor_medio))
-	l = l.reshape(3, len(r0))
-	l = l.T
-	
-	# Ordena la matriz
-	if jugado == 0:
-		l = l[np.where(l[:,1] == 0)]  # deja en la matriz los juegos no jugados
-	elif jugado == 1:
-		l = l[np.where(l[:,1] == 1)]  # deja en la matriz los juegos si jugados
-		
-	l = l[l[:,2].argsort()]
-	l = np.flipud(l)
-	
-	seleccion = ejecuta_seleccion (id_user, l, items, y, r, unid_select)
+	tabla_slc = crea_tabla_slc(valor_medio, r0, True, jugado)	
+	seleccion = ejecuta_seleccion (id_user, items, y, r, unid_select, tabla_slc)
 		
 	return seleccion
 
@@ -203,21 +163,8 @@ def select_archive(id_user,columna,jugado):
 	# Crea una matriz en la que se guardan los indices, R0 y suma juegos
 	datos = pd.to_numeric(items[columna].tolist())
 
-	ind = range(0, len(r0))
-	l = np.concatenate((ind, r0, datos))
-	l = l.reshape(3, len(r0))
-	l = l.T
-	
-	# Ordena la matriz
-	if jugado == 0:
-		l = l[np.where(l[:,1] == 0)]  # deja en la matriz los juegos no jugados
-	elif jugado == 1:
-		l = l[np.where(l[:,1] == 1)]  # deja en la matriz los juegos si jugados
-		
-	l = l[l[:,2].argsort()]
-	l = np.flipud(l)
-	
-	seleccion = ejecuta_seleccion (id_user, l, items, y, r, unid_select)
+	tabla_slc = crea_tabla_slc(datos, r0, True, jugado)
+	seleccion = ejecuta_seleccion (id_user, items, y, r, unid_select, tabla_slc)
 		
 	return seleccion
 
@@ -238,22 +185,35 @@ def select_busqueda(id_user, palabra_busq):
 				dist_min = dist
 		distancia.append(dist_min)
 
-	# Crea una matriz en la que se guardan los indices, R0 y distancia
-	ind = range(0, len(r0))
-	l = np.concatenate((ind, r0, distancia))
-	l = l.reshape(3, len(r0))
-	l = l.T
+	jugado = 3
 	
-	# Ordena la matriz
-	l = l[l[:,2].argsort()]
-	#l = np.flipud(l)
-	
-	seleccion = ejecuta_seleccion (id_user, l, items, y, r, unid_select)
+	tabla_slc = crea_tabla_slc(distancia, r0, False, jugado)
+	seleccion = ejecuta_seleccion (id_user, items, y, r, unid_select, tabla_slc)
 		
 	return seleccion
 
 	
-def ejecuta_seleccion (id_user, l, items, y, r, unid_select):
+def crea_tabla_slc (criterio_slc, r0, ascendiente, jugado):
+	# Crea una matriz en la que se guardan los indices, R0 y criterio_slc
+	ind = range(0, len(r0))
+	l = np.concatenate((ind, r0, criterio_slc))
+	l = l.reshape(3, len(r0))
+	l = l.T
+
+	if jugado == 0:
+		l = l[np.where(l[:,1] == 0)]  # deja en la matriz los juegos no jugados
+	elif jugado == 1:
+		l = l[np.where(l[:,1] == 1)]  # deja en la matriz los juegos si jugados
+		
+	# Ordena la matriz
+	l = l[l[:,2].argsort()]
+	
+	if ascendiente:
+		l = np.flipud(l)
+
+	return l
+
+def ejecuta_seleccion (id_user, items, y, r, unid_select, l):
 	seleccion = list()
 	linea_select_a = list()
 	linea_select_b = list()
@@ -272,104 +232,45 @@ def ejecuta_seleccion (id_user, l, items, y, r, unid_select):
 	return seleccion
 	
 
-def actualizaSelec(id_juego, valor, seleccion_total):
+def actualiza_selec(id_juego, valor, seleccion_total):
 	# Recorre todas las selecciones que incluya el total
 	for slc_parcial in seleccion_total:
 	
 		# Recorre la seleccion en particular
 		for slc in slc_parcial['select']:
 		
-			# Actualiza los valores del juego si existe
-			if slc[15] == id_juego:
-				
-				# slc[8] == Numero usuarios     #slc[14] == Puntuacion
-				# slc[9] - slc[13] == 5 stars - 1 star
-				# Si la puntuacion anterior era 0 -> ahora hay un user más
-				if slc[14] == 0:
-					slc[8] = slc[8] + 1
-					
-				# Actualiza según valores recibidos
-				
-				if valor == 0:
-					slc[8] = slc[8] - 1
-					if slc[14] == 1:
-						slc[13] = slc[13] - 1
-					elif slc[14] == 2:
-						slc[12] = slc[12] - 1
-					elif slc[14] == 3:
-						slc[11] = slc[11] - 1
-					elif slc[14] == 4:
-						slc[10] = slc[10] - 1
-					elif slc[14] == 5:
-						slc[9] = slc[9] - 1
-
-				elif valor == 1:
-					slc[13] = slc[13] + 1
-					if slc[14] == 2:
-						slc[12] = slc[12] - 1
-					elif slc[14] == 3:
-						slc[11] = slc[11] - 1
-					elif slc[14] == 4:
-						slc[10] = slc[10] - 1
-					elif slc[14] == 5:
-						slc[9] = slc[9] - 1
-					
-				elif valor == 2:
-					slc[12] = slc[12] + 1
-					if slc[14] == 1:
-						slc[13] = slc[13] - 1
-					elif slc[14] == 3:
-						slc[11] = slc[11] - 1
-					elif slc[14] == 4:
-						slc[10] = slc[10] - 1
-					elif slc[14] == 5:
-						slc[9] = slc[9] - 1
-						
-				elif valor == 3:
-					slc[11] = slc[11] + 1
-					if slc[14] == 1:
-						slc[13] = slc[13] - 1
-					elif slc[14] == 2:
-						slc[12] = slc[12] - 1
-					elif slc[14] == 4:
-						slc[10] = slc[10] - 1
-					elif slc[14] == 5:
-						slc[9] = slc[9] - 1			
-						
-				elif valor == 4:
-					slc[10] = slc[10] + 1
-					if slc[14] == 1:
-						slc[13] = slc[13] - 1
-					elif slc[14] == 2:
-						slc[12] = slc[12] - 1
-					elif slc[14] == 3:
-						slc[11] = slc[11] - 1
-					elif slc[14] == 5:
-						slc[9] = slc[9] - 1						
-
-				elif valor == 5:
-					slc[9] = slc[9] + 1
-					if slc[14] == 1:
-						slc[13] = slc[13] - 1
-					elif slc[14] == 2:
-						slc[12] = slc[12] - 1
-					elif slc[14] == 3:
-						slc[11] = slc[11] - 1
-					elif slc[14] == 4:
-						slc[10] = slc[10] - 1					
-				
-				# Puntuacion y  Media
-				slc[14] = valor
-				slc[6] = str("{:.1f}".format((slc[9]*5 + slc[10]*4 + slc[11]*3 + slc[12]*2 + slc[13])/slc[8]))
-				slc[7] = imagen_puntuacion((slc[9]*5 + slc[10]*4 + slc[11]*3 + slc[12]*2 + slc[13])/slc[8])
-				
-			# fin si es cambio
+			slc = actualiza_selec2(slc, id_juego, valor)
 		
 		# fin for parcial
 	#fin for total
 	return seleccion_total
 	
 	
+def actualiza_selec2(slc, id_juego, valor):
+	# Actualiza los valores del juego si existe
+	if slc[15] == id_juego:
+		
+		# slc[8] == Numero usuarios     #slc[14] == Puntuacion
+		# slc[9] - slc[13] == 5 stars - 1 star
+		
+		if slc[14] == 0:
+			slc[8] = slc[8] + 1
+		else:
+			ind_menos = 14 - slc[14]
+			slc[ind_menos] = slc[ind_menos] - 1
+					
+		if valor == 0:
+			slc[8] = slc[8] - 1
+		else:
+			ind_mas = 14 - valor
+			slc[ind_mas] = slc[ind_mas] + 1
+			
+		# Puntuacion y  Media
+		slc[14] = valor
+		slc[6] = str("{:.1f}".format((slc[9]*5 + slc[10]*4 + slc[11]*3 + slc[12]*2 + slc[13])/slc[8]))
+		slc[7] = imagen_puntuacion((slc[9]*5 + slc[10]*4 + slc[11]*3 + slc[12]*2 + slc[13])/slc[8])
+	
+	return slc
 	
 	
 	

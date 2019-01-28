@@ -4,7 +4,7 @@ from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, SearchForm
 from app.models import User
-from app.filtros.selectOfertas import select_predicciones, select_favoritos, select_aleatorio, select_mejor_valorados, select_mas_jugados, actualizaSelec, select_busqueda, select_archive
+from app.filtros.selectOfertas import select_predicciones, select_favoritos, select_aleatorio, select_mejor_valorados, select_mas_jugados, actualiza_selec, select_busqueda, select_archive
 from app.filtros.actualizaFiltros import actualiza_filtros, actualiza_yr
 from datetime import datetime
 import copy
@@ -22,28 +22,17 @@ def index():
 	select_modelos, select_users, select_juegos = select_predicciones(id_user)
 	selecciones = [{'filtro': 'Modelos', 'select':select_modelos}, {'filtro': 'Usuarios', 'select':select_users}, {'filtro': 'Productos', 'select':select_juegos}]
 	selec = selecciones
-	texto = '... pensamos que te gustará'
 	return redirect(url_for('index2'))
 
 @app.route('/index2', methods=['GET', 'POST'])
 @login_required
 # Si el usuario está logeado selecciona ofertas
 def index2():
-	global selec
-	jg_ifrm = None
-	if request.args.get('juego') != None:
-		juego = int(request.args.get('juego'))
-		user = int(request.args.get('user'))
-		valor = int(request.args.get('valor'))
-		actualiza_yr(juego, user, valor)
-		if request.args.get('jg_ifrm') != "":
-			jg_ifrm = int(request.args.get('jg_ifrm'))
-			
-		selec = actualizaSelec(juego, valor, selec)
+	jg_ifrm = control_parametros(request.args)
 	texto = '... pensamos que te gustará'
 	return render_template('index.html', title='Home', selecciones=selec, texto_cab=texto, jg_ifrm=jg_ifrm)
 
-
+	
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	if current_user.is_authenticated:
@@ -73,7 +62,6 @@ def favoritos():
 		select_fav = select_favoritos(id_user)
 		selecciones =[{'filtro':'Favoritos', 'select':select_fav}]
 		selec = selecciones
-		texto='... tus juegos favoritos'
 		return redirect(url_for('favoritos2'))
 
 		
@@ -81,23 +69,14 @@ def favoritos():
 @login_required
 # Si el usuario está logeado selecciona ofertas
 def favoritos2():
-	global selec
-	jg_ifrm = None
-	if request.args.get('juego') != None:
-		juego = int(request.args.get('juego'))
-		user = int(request.args.get('user'))
-		valor = int(request.args.get('valor'))
-		actualiza_yr(juego, user, valor)
-		if request.args.get('jg_ifrm') != "":
-			jg_ifrm = int(request.args.get('jg_ifrm'))
-
-		selec = actualizaSelec(juego, valor, selec)
+	jg_ifrm = control_parametros(request.args)
 	texto='... tus juegos favoritos'
 	
 	page = request.args.get('page', 1, type=int)
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec, 'favoritos2')
 	return render_template('index.html', title='Favoritos', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag=page, total_pag=total_pag, jg_ifrm=jg_ifrm)
 
+	
 
 @app.route('/mas_jugados_todos', methods=['GET', 'POST'])
 @login_required
@@ -107,24 +86,13 @@ def mas_jugados_todos():
 	select_mas_jug = select_mas_jugados(id_user,3)
 	selecciones =[{'filtro':'Más Jugados: Todos los juegos', 'select':select_mas_jug}]
 	selec = selecciones
-	texto='... los más jugados por todos los usuarios'
 	return redirect(url_for('mas_jugados2_todos'))
 	
 	
 @app.route('/mas_jugados2_todos', methods=['GET', 'POST'])
 @login_required
 def mas_jugados2_todos():
-	global selec
-	jg_ifrm = None
-	if request.args.get('juego') != None:
-		juego = int(request.args.get('juego'))
-		user = int(request.args.get('user'))
-		valor = int(request.args.get('valor'))
-		actualiza_yr(juego, user, valor)
-		if request.args.get('jg_ifrm') != "":
-			jg_ifrm = int(request.args.get('jg_ifrm'))
-			
-		selec = actualizaSelec(juego, valor, selec)
+	jg_ifrm = control_parametros(request.args)
 	texto='... los más jugados por todos los usuarios'
 	
 	page = request.args.get('page', 1, type=int)
@@ -141,24 +109,13 @@ def mas_jugados_ya_jugado():
 	select_mas_jug = select_mas_jugados(id_user,1)
 	selecciones =[{'filtro':'Más Jugados: Jugados antes por ti', 'select':select_mas_jug}]
 	selec = selecciones
-	texto='... los más jugados por todos los usuarios'
 	return redirect(url_for('mas_jugados2_ya_jugado'))
 	
 	
 @app.route('/mas_jugados2_ya_jugado', methods=['GET', 'POST'])
 @login_required
 def mas_jugados2_ya_jugado():
-	global selec
-	jg_ifrm = None
-	if request.args.get('juego') != None:
-		juego = int(request.args.get('juego'))
-		user = int(request.args.get('user'))
-		valor = int(request.args.get('valor'))
-		actualiza_yr(juego, user, valor)
-		if request.args.get('jg_ifrm') != "":
-			jg_ifrm = int(request.args.get('jg_ifrm'))
-			
-		selec = actualizaSelec(juego, valor, selec)
+	jg_ifrm = control_parametros(request.args)
 	texto='... los más jugados por todos los usuarios'
 	
 	page = request.args.get('page', 1, type=int)
@@ -174,24 +131,13 @@ def mas_jugados_no_jugado():
 	select_mas_jug = select_mas_jugados(id_user,0)
 	selecciones =[{'filtro':'Más Jugados: Aún no has jugado', 'select':select_mas_jug}]
 	selec = selecciones
-	texto='... los más jugados por todos los usuarios'
 	return redirect(url_for('mas_jugados2_no_jugado'))
 	
 	
 @app.route('/mas_jugados2_no_jugado', methods=['GET', 'POST'])
 @login_required
 def mas_jugados2_no_jugado():
-	global selec
-	jg_ifrm = None
-	if request.args.get('juego') != None:
-		juego = int(request.args.get('juego'))
-		user = int(request.args.get('user'))
-		valor = int(request.args.get('valor'))
-		actualiza_yr(juego, user, valor)
-		if request.args.get('jg_ifrm') != "":
-			jg_ifrm = int(request.args.get('jg_ifrm'))
-			
-		selec = actualizaSelec(juego, valor, selec)
+	jg_ifrm = control_parametros(request.args)
 	texto='... los más jugados por todos los usuarios'
 	
 	page = request.args.get('page', 1, type=int)
@@ -208,24 +154,13 @@ def mejor_valorados_todos():
 	select_valor = select_mejor_valorados(id_user, 3)
 	selecciones =[{'filtro':'Mejor Valorados: Todos los Juegos', 'select':select_valor}]
 	selec = selecciones
-	texto='... los mejor valorados por todos los usuarios'
 	return redirect(url_for('mejor_valorados2_todos'))
 	
 
 @app.route('/mejor_valorados2_todos', methods=['GET', 'POST'])
 @login_required
 def mejor_valorados2_todos():
-	global selec
-	jg_ifrm = None
-	if request.args.get('juego') != None:
-		juego = int(request.args.get('juego'))
-		user = int(request.args.get('user'))
-		valor = int(request.args.get('valor'))
-		actualiza_yr(juego, user, valor)
-		if request.args.get('jg_ifrm') != "":
-			jg_ifrm = int(request.args.get('jg_ifrm'))
-			
-		selec = actualizaSelec(juego, valor, selec)
+	jg_ifrm = control_parametros(request.args)
 	texto='... los mejor valorados por todos los usuarios'
 	
 	page = request.args.get('page', 1, type=int)
@@ -241,24 +176,13 @@ def mejor_valorados_ya_jugado():
 	select_valor = select_mejor_valorados(id_user, 1)
 	selecciones =[{'filtro':'Mejor Valorados: Jugados antes por ti', 'select':select_valor}]
 	selec = selecciones
-	texto='... los mejor valorados por todos los usuarios'
 	return redirect(url_for('mejor_valorados2_ya_jugados'))
 	
 
 @app.route('/mejor_valorados2_ya_jugados', methods=['GET', 'POST'])
 @login_required
 def mejor_valorados2_ya_jugados():
-	global selec
-	jg_ifrm = None
-	if request.args.get('juego') != None:
-		juego = int(request.args.get('juego'))
-		user = int(request.args.get('user'))
-		valor = int(request.args.get('valor'))
-		actualiza_yr(juego, user, valor)
-		if request.args.get('jg_ifrm') != "":
-			jg_ifrm = int(request.args.get('jg_ifrm'))
-			
-		selec = actualizaSelec(juego, valor, selec)
+	jg_ifrm = control_parametros(request.args)
 	texto='... los mejor valorados por todos los usuarios'
 	
 	page = request.args.get('page', 1, type=int)
@@ -274,24 +198,13 @@ def mejor_valorados_no_jugado():
 	select_valor = select_mejor_valorados(id_user, 0)
 	selecciones =[{'filtro':'Mejor Valorados: Aún no has jugado', 'select':select_valor}]
 	selec = selecciones
-	texto='... los mejor valorados por todos los usuarios'
 	return redirect(url_for('mejor_valorados2_no_jugado'))
 	
 
 @app.route('/mejor_valorados2_no_jugado', methods=['GET', 'POST'])
 @login_required
 def mejor_valorados2_no_jugado():
-	global selec
-	jg_ifrm = None
-	if request.args.get('juego') != None:
-		juego = int(request.args.get('juego'))
-		user = int(request.args.get('user'))
-		valor = int(request.args.get('valor'))
-		actualiza_yr(juego, user, valor)
-		if request.args.get('jg_ifrm') != "":
-			jg_ifrm = int(request.args.get('jg_ifrm'))
-			
-		selec = actualizaSelec(juego, valor, selec)
+	jg_ifrm = control_parametros(request.args)
 	texto='... los mejor valorados por todos los usuarios'
 	
 	page = request.args.get('page', 1, type=int)
@@ -308,24 +221,13 @@ def mas_vistos_archive_todos():
 	select_valor = select_archive(id_user, 'visitas', 3)
 	selecciones =[{'filtro':'Mas vistos en archive.org: Todos los Juegos', 'select':select_valor}]
 	selec = selecciones
-	texto='... los más vistos en archive.org'
 	return redirect(url_for('mas_vistos_archive2_todos'))
 	
 
 @app.route('/mas_vistos_archive2_todos', methods=['GET', 'POST'])
 @login_required
 def mas_vistos_archive2_todos():
-	global selec
-	jg_ifrm = None
-	if request.args.get('juego') != None:
-		juego = int(request.args.get('juego'))
-		user = int(request.args.get('user'))
-		valor = int(request.args.get('valor'))
-		actualiza_yr(juego, user, valor)
-		if request.args.get('jg_ifrm') != "":
-			jg_ifrm = int(request.args.get('jg_ifrm'))
-			
-		selec = actualizaSelec(juego, valor, selec)
+	jg_ifrm = control_parametros(request.args)
 	texto='... los más vistos en archive.org'
 	
 	page = request.args.get('page', 1, type=int)
@@ -341,24 +243,13 @@ def mas_vistos_archive_ya_jugado():
 	select_valor = select_archive(id_user, 'visitas', 1)
 	selecciones =[{'filtro':'Mas vistos en archive.org: Jugados antes por ti', 'select':select_valor}]
 	selec = selecciones
-	texto='... los más vistos en archive.org'
 	return redirect(url_for('mas_vistos_archive2_ya_jugado'))
 	
 
 @app.route('/mas_vistos_archive2_ya_jugado', methods=['GET', 'POST'])
 @login_required
 def mas_vistos_archive2_ya_jugado():
-	global selec
-	jg_ifrm = None
-	if request.args.get('juego') != None:
-		juego = int(request.args.get('juego'))
-		user = int(request.args.get('user'))
-		valor = int(request.args.get('valor'))
-		actualiza_yr(juego, user, valor)
-		if request.args.get('jg_ifrm') != "":
-			jg_ifrm = int(request.args.get('jg_ifrm'))
-			
-		selec = actualizaSelec(juego, valor, selec)
+	jg_ifrm = control_parametros(request.args)
 	texto='... los más vistos en archive.org'
 	
 	page = request.args.get('page', 1, type=int)
@@ -375,24 +266,13 @@ def mas_vistos_archive_no_jugado():
 	select_valor = select_archive(id_user, 'visitas', 0)
 	selecciones =[{'filtro':'Mas vistos en archive.org: Aún no has jugado', 'select':select_valor}]
 	selec = selecciones
-	texto='... los más vistos en archive.org'
 	return redirect(url_for('mas_vistos_archive2_no_jugado'))
 	
 
 @app.route('/mas_vistos_archive2_no_jugado', methods=['GET', 'POST'])
 @login_required
 def mas_vistos_archive2_no_jugado():
-	global selec
-	jg_ifrm = None
-	if request.args.get('juego') != None:
-		juego = int(request.args.get('juego'))
-		user = int(request.args.get('user'))
-		valor = int(request.args.get('valor'))
-		actualiza_yr(juego, user, valor)
-		if request.args.get('jg_ifrm') != "":
-			jg_ifrm = int(request.args.get('jg_ifrm'))
-			
-		selec = actualizaSelec(juego, valor, selec)
+	jg_ifrm = control_parametros(request.args)
 	texto='... los más vistos en archive.org'
 	
 	page = request.args.get('page', 1, type=int)
@@ -409,24 +289,13 @@ def mas_stars_archive_todos():
 	select_valor = select_archive(id_user, 'favoritos', 3)
 	selecciones =[{'filtro':'Mas stars en archive.org: Todos los Juegos', 'select':select_valor}]
 	selec = selecciones
-	texto='... con más stars en archive.org'
 	return redirect(url_for('mas_stars_archive2_todos'))
 	
 
 @app.route('/mas_stars_archive2_todos', methods=['GET', 'POST'])
 @login_required
 def mas_stars_archive2_todos():
-	global selec
-	jg_ifrm = None
-	if request.args.get('juego') != None:
-		juego = int(request.args.get('juego'))
-		user = int(request.args.get('user'))
-		valor = int(request.args.get('valor'))
-		actualiza_yr(juego, user, valor)
-		if request.args.get('jg_ifrm') != "":
-			jg_ifrm = int(request.args.get('jg_ifrm'))
-			
-		selec = actualizaSelec(juego, valor, selec)
+	jg_ifrm = control_parametros(request.args)
 	texto='... con más stars en archive.org'
 	
 	page = request.args.get('page', 1, type=int)
@@ -441,26 +310,15 @@ def mas_stars_archive_ya_jugado():
 	global selec
 	id_user = current_user.id - 1
 	select_valor = select_archive(id_user, 'favoritos', 1)
-	selecciones =[{'filtro':'Mas stars en archive.org', 'select':select_valor}]
+	selecciones =[{'filtro':'Mas stars en archive.org: Jugados antes por ti', 'select':select_valor}]
 	selec = selecciones
-	texto='... con más stars en archive.org'
 	return redirect(url_for('mas_stars_archive2_ya_jugado'))
 	
 
 @app.route('/mas_stars_archive2_ya_jugado', methods=['GET', 'POST'])
 @login_required
 def mas_stars_archive2_ya_jugado():
-	global selec
-	jg_ifrm = None
-	if request.args.get('juego') != None:
-		juego = int(request.args.get('juego'))
-		user = int(request.args.get('user'))
-		valor = int(request.args.get('valor'))
-		actualiza_yr(juego, user, valor)
-		if request.args.get('jg_ifrm') != "":
-			jg_ifrm = int(request.args.get('jg_ifrm'))
-			
-		selec = actualizaSelec(juego, valor, selec)
+	jg_ifrm = control_parametros(request.args)
 	texto='... con más stars en archive.org'
 	
 	page = request.args.get('page', 1, type=int)
@@ -477,24 +335,13 @@ def mas_stars_archive_no_jugado():
 	select_valor = select_archive(id_user, 'favoritos', 0)
 	selecciones =[{'filtro':'Mas stars en archive.org: Aún no has jugado', 'select':select_valor}]
 	selec = selecciones
-	texto='... con más stars en archive.org'
 	return redirect(url_for('mas_stars_archive2_no_jugado'))
 	
 
 @app.route('/mas_stars_archive2_no_jugado', methods=['GET', 'POST'])
 @login_required
 def mas_stars_archive2_no_jugado():
-	global selec
-	jg_ifrm = None
-	if request.args.get('juego') != None:
-		juego = int(request.args.get('juego'))
-		user = int(request.args.get('user'))
-		valor = int(request.args.get('valor'))
-		actualiza_yr(juego, user, valor)
-		if request.args.get('jg_ifrm') != "":
-			jg_ifrm = int(request.args.get('jg_ifrm'))
-			
-		selec = actualizaSelec(juego, valor, selec)
+	jg_ifrm = control_parametros(request.args)
 	texto='... con más stars en archive.org'
 	
 	page = request.args.get('page', 1, type=int)
@@ -508,26 +355,15 @@ def mas_comments_archive_todos():
 	global selec
 	id_user = current_user.id - 1
 	select_valor = select_archive(id_user, 'comentarios', 3)
-	selecciones =[{'filtro':'con más comentarios en archive.org: Todos los Juegos', 'select':select_valor}]
+	selecciones =[{'filtro':'Con más comentarios en archive.org: Todos los Juegos', 'select':select_valor}]
 	selec = selecciones
-	texto='... con más comentarios en archive.org'
 	return redirect(url_for('mas_comments_archive2_todos'))
 	
 
 @app.route('/mas_comments_archive2_todos', methods=['GET', 'POST'])
 @login_required
 def mas_comments_archive2_todos():
-	global selec
-	jg_ifrm = None
-	if request.args.get('juego') != None:
-		juego = int(request.args.get('juego'))
-		user = int(request.args.get('user'))
-		valor = int(request.args.get('valor'))
-		actualiza_yr(juego, user, valor)
-		if request.args.get('jg_ifrm') != "":
-			jg_ifrm = int(request.args.get('jg_ifrm'))
-			
-		selec = actualizaSelec(juego, valor, selec)
+	jg_ifrm = control_parametros(request.args)
 	texto='... con más comentarios en archive.org'
 	
 	page = request.args.get('page', 1, type=int)
@@ -541,26 +377,15 @@ def mas_comments_archive_ya_jugado():
 	global selec
 	id_user = current_user.id - 1
 	select_valor = select_archive(id_user, 'comentarios', 1)
-	selecciones =[{'filtro':'con más comentarios en archive.org: Jugados antes por ti', 'select':select_valor}]
+	selecciones =[{'filtro':'Con más comentarios en archive.org: Jugados antes por ti', 'select':select_valor}]
 	selec = selecciones
-	texto='... con más comentarios en archive.org'
 	return redirect(url_for('mas_comments_archive2_ya_jugado'))
 	
 
 @app.route('/mas_comments_archive2_ya_jugado', methods=['GET', 'POST'])
 @login_required
 def mas_comments_archive2_ya_jugado():
-	global selec
-	jg_ifrm = None
-	if request.args.get('juego') != None:
-		juego = int(request.args.get('juego'))
-		user = int(request.args.get('user'))
-		valor = int(request.args.get('valor'))
-		actualiza_yr(juego, user, valor)
-		if request.args.get('jg_ifrm') != "":
-			jg_ifrm = int(request.args.get('jg_ifrm'))
-			
-		selec = actualizaSelec(juego, valor, selec)
+	jg_ifrm = control_parametros(request.args)
 	texto='... con más comentarios en archive.org'
 	
 	page = request.args.get('page', 1, type=int)
@@ -575,26 +400,15 @@ def mas_comments_archive_no_jugado():
 	global selec
 	id_user = current_user.id - 1
 	select_valor = select_archive(id_user, 'comentarios', 0)
-	selecciones =[{'filtro':'con más comentarios en archive.org: Aún no has jugado', 'select':select_valor}]
+	selecciones =[{'filtro':'Con más comentarios en archive.org: Aún no has jugado', 'select':select_valor}]
 	selec = selecciones
-	texto='... con más comentarios en archive.org'
 	return redirect(url_for('mas_comments_archive2_no_jugado'))
 	
 
 @app.route('/mas_comments_archive2_no_jugado', methods=['GET', 'POST'])
 @login_required
 def mas_comments_archive2_no_jugado():
-	global selec
-	jg_ifrm = None
-	if request.args.get('juego') != None:
-		juego = int(request.args.get('juego'))
-		user = int(request.args.get('user'))
-		valor = int(request.args.get('valor'))
-		actualiza_yr(juego, user, valor)
-		if request.args.get('jg_ifrm') != "":
-			jg_ifrm = int(request.args.get('jg_ifrm'))
-			
-		selec = actualizaSelec(juego, valor, selec)
+	jg_ifrm = control_parametros(request.args)
 	texto='... con más comentarios en archive.org'
 	
 	page = request.args.get('page', 1, type=int)
@@ -613,25 +427,13 @@ def busqueda():
 	select_busq = select_busqueda(id_user, palabra_busq)
 	selecciones =[{'filtro': text_filtro, 'select':select_busq}]
 	selec = selecciones
-	texto='... los resultados de tu búsqueda'
 	return redirect(url_for('busqueda2'))
 	
 
 @app.route('/busqueda2', methods=['GET', 'POST'])
 @login_required
 def busqueda2():
-	global selec
-	jg_ifrm = None
-	if request.args.get('juego') != None:
-		juego = int(request.args.get('juego'))
-		user = int(request.args.get('user'))
-		valor = int(request.args.get('valor'))
-		actualiza_yr(juego, user, valor)
-		if request.args.get('jg_ifrm') != "":
-			jg_ifrm = int(request.args.get('jg_ifrm'))
-
-		selec = actualizaSelec(juego, valor, selec)
-	texto= ' ... los resultados de tu búsqueda'
+	jg_ifrm = control_parametros(request.args)
 	page = request.args.get('page', 1, type=int)
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec,'busqueda2')
 	
@@ -669,6 +471,21 @@ def register():
 		return redirect(url_for('login'))
 	return render_template('register.html', title='Register', form=form)
 
+
+def control_parametros(param):
+	global selec
+	jg_ifrm = None
+	if param.get('juego') != None:
+		juego = int(param.get('juego'))
+		user = int(param.get('user'))
+		valor = int(param.get('valor'))
+		actualiza_yr(juego, user, valor)
+		if param.get('jg_ifrm') != "":
+			jg_ifrm = int(param.get('jg_ifrm'))
+			
+		selec = actualiza_selec(juego, valor, selec)
+		
+	return jg_ifrm
 
 	
 def calc_paginacion(page, selec, origen):
