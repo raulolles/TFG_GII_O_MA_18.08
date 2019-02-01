@@ -2,6 +2,15 @@
 
 {% block app_content %}
 
+	<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+	
+	<script>
+		$(img_bandera).ready(function(){
+			var bandera = 'static/banderas/' + '{{ txt['sesion_leng'] }}' + '.png'
+			document.getElementById('img_bandera').src = bandera ;
+		});
+	</script>
+	
 	<script type="text/javascript">
 		function muestraJuego(jgo, selecciones){
 			capa = document.getElementById("capaJuego");
@@ -42,8 +51,8 @@
 	
 	<div style="margin-bottom:40px">
 		<div style="float:left"><img src="{{url_for('static', filename="avatares/" + current_user.avatar + ".png")}}" width="70" height="70" alt="user avatar"/></div>
-		<div style="float:left"> <h2>Hi! {{ current_user.username }}</h2> </div>
-		<div style="float:right; color:gray"> <h3><em> {{ texto_cab }} </em></h3> </div>
+		<div style="float:left"> <h2>{{ txt['saludo'] }} {{ current_user.username }}</h2> </div>
+		<div style="float:right; color:gray"> <h3><i> {{ texto_cab }} </i></h3> </div>
     </div>
 	
 	<div id="capaJuego" style="display:none; margin-top:80px">
@@ -56,7 +65,7 @@
 			
 			<div style="float:right; vertical-align:top; margin-top:10px">
 				<button type="button" class="btn btn-default" aria-label="Left Align" onClick="escondeJuego({{ selecciones }})">
-					<span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span> Cerrar Juego
+					<span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span> {{ txt['iframe_cerrar'] }}
 				</button>
 				<div id="identJuego" style="color:black; display:none"></div>
 				<div id="identUser" style="color:black"></div>

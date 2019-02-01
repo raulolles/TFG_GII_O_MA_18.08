@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request, g
+from flask import render_template, flash, redirect, url_for, session, request, g
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
@@ -7,6 +7,8 @@ from app.models import User
 from app.filtros.selectOfertas import select_predicciones, select_favoritos, select_aleatorio, select_mejor_valorados, select_mas_jugados, actualiza_selec, select_busqueda, select_archive
 from app.filtros.actualizaFiltros import actualiza_filtros, actualiza_yr
 from datetime import datetime
+from app.internalizacion.lenguajes import crea_dicc_lenguajes, carga_dicc_lenguaje 
+
 import copy
 import numpy as np
 
@@ -18,9 +20,10 @@ selec = list()
 # Si el usuario está logeado selecciona ofertas
 def index():
 	global selec
+	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
 	select_modelos, select_users, select_juegos = select_predicciones(id_user)
-	selecciones = [{'filtro': 'Modelos', 'select':select_modelos}, {'filtro': 'Usuarios', 'select':select_users}, {'filtro': 'Productos', 'select':select_juegos}]
+	selecciones = [{'filtro': txt['pg_ind_tit_selec_modelos'], 'select':select_modelos}, {'filtro': txt['pg_ind_tit_selec_usuarios'], 'select':select_users}, {'filtro': txt['pg_ind_tit_selec_productos'], 'select':select_juegos}]
 	selec = selecciones
 	return redirect(url_for('index2'))
 
@@ -28,13 +31,15 @@ def index():
 @login_required
 # Si el usuario está logeado selecciona ofertas
 def index2():
+	txt = control_lenguaje(request.args,'index')
 	jg_ifrm = control_parametros(request.args)
-	texto = '... pensamos que te gustará'
-	return render_template('index.html', title='Home', selecciones=selec, texto_cab=texto, jg_ifrm=jg_ifrm)
+	texto = txt['pg_ind_text']
+	return render_template('index.html', txt=txt, title='Home', selecciones=selec, texto_cab=texto, jg_ifrm=jg_ifrm)
 
-	
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+	txt = control_lenguaje(request.args)
 	if current_user.is_authenticated:
 		return redirect(url_for('index'))
 	form = LoginForm()
@@ -43,14 +48,14 @@ def login():
 	if form.validate_on_submit():
 		user = User.query.filter_by(username=form.username.data).first()
 		if user is None or not user.check_password(form.password.data):
-			flash('Invalid username or password')
+			flash(txt['pg_login_error_ident'])
 			return redirect(url_for('login'))
 		login_user(user, remember=form.remember_me.data)
 		next_page = request.args.get('next')
 		if not next_page or url_parse(next_page).netloc != '':
 			next_page = url_for('index')
 		return redirect(next_page)
-	return render_template('login.html', title='Sign In', form=form, selecciones=selecciones)
+	return render_template('login.html', txt=txt, title='Sign In', form=form, selecciones=selecciones)
 
 	
 @app.route('/favoritos', methods=['GET', 'POST'])
@@ -58,9 +63,10 @@ def login():
 # Si el usuario está logeado selecciona ofertas
 def favoritos():
 		global selec
+		txt = control_lenguaje(request.args)
 		id_user = current_user.id - 1
 		select_fav = select_favoritos(id_user)
-		selecciones =[{'filtro':'Favoritos', 'select':select_fav}]
+		selecciones =[{'filtro':txt['pg_ind_tit_selec_favoritos'], 'select':select_fav}]
 		selec = selecciones
 		return redirect(url_for('favoritos2'))
 
@@ -69,22 +75,23 @@ def favoritos():
 @login_required
 # Si el usuario está logeado selecciona ofertas
 def favoritos2():
+	txt = control_lenguaje(request.args, 'favoritos')
 	jg_ifrm = control_parametros(request.args)
-	texto='... tus juegos favoritos'
+	texto = txt['pg_ind_text_favoritos']
 	
 	page = request.args.get('page', 1, type=int)
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec, 'favoritos2')
-	return render_template('index.html', title='Favoritos', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag=page, total_pag=total_pag, jg_ifrm=jg_ifrm)
+	return render_template('index.html', txt=txt, title='Favoritos', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag=page, total_pag=total_pag, jg_ifrm=jg_ifrm)
 
-	
 
 @app.route('/mas_jugados_todos', methods=['GET', 'POST'])
 @login_required
 def mas_jugados_todos():
 	global selec
+	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
 	select_mas_jug = select_mas_jugados(id_user,3)
-	selecciones =[{'filtro':'Más Jugados: Todos los juegos', 'select':select_mas_jug}]
+	selecciones =[{'filtro': txt['pg_ind_tit_selec_mas_jugados']+txt['pg_ind_tit_selec_todos_juegos'], 'select':select_mas_jug}]
 	selec = selecciones
 	return redirect(url_for('mas_jugados2_todos'))
 	
@@ -92,12 +99,13 @@ def mas_jugados_todos():
 @app.route('/mas_jugados2_todos', methods=['GET', 'POST'])
 @login_required
 def mas_jugados2_todos():
+	txt = control_lenguaje(request.args, 'mas_jugados_todos')
 	jg_ifrm = control_parametros(request.args)
-	texto='... los más jugados por todos los usuarios'
+	texto= txt['pg_ind_text_mas_jugados_todos']
 	
 	page = request.args.get('page', 1, type=int)
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec, 'mas_jugados2_todos')
-	return render_template('index.html', title='Mas Jugados', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag=page, total_pag=total_pag, jg_ifrm=jg_ifrm)
+	return render_template('index.html', txt=txt, title='Mas Jugados', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag=page, total_pag=total_pag, jg_ifrm=jg_ifrm)
 	
 
 
@@ -105,9 +113,10 @@ def mas_jugados2_todos():
 @login_required
 def mas_jugados_ya_jugado():
 	global selec
+	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
 	select_mas_jug = select_mas_jugados(id_user,1)
-	selecciones =[{'filtro':'Más Jugados: Jugados antes por ti', 'select':select_mas_jug}]
+	selecciones =[{'filtro': txt['pg_ind_tit_selec_mas_jugados']+txt['pg_ind_tit_selec_ya_jugados'], 'select':select_mas_jug}]
 	selec = selecciones
 	return redirect(url_for('mas_jugados2_ya_jugado'))
 	
@@ -115,21 +124,23 @@ def mas_jugados_ya_jugado():
 @app.route('/mas_jugados2_ya_jugado', methods=['GET', 'POST'])
 @login_required
 def mas_jugados2_ya_jugado():
+	txt = control_lenguaje(request.args, 'mas_jugados_ya_jugado')
 	jg_ifrm = control_parametros(request.args)
-	texto='... los más jugados por todos los usuarios'
+	texto=txt['pg_ind_text_mas_jugados_todos']
 	
 	page = request.args.get('page', 1, type=int)
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec, 'mas_jugados2_ya_jugado')
-	return render_template('index.html', title='Mas Jugados', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag=page, total_pag=total_pag, jg_ifrm=jg_ifrm)
+	return render_template('index.html', txt=txt, title='Mas Jugados', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag=page, total_pag=total_pag, jg_ifrm=jg_ifrm)
 		
 		
 @app.route('/mas_jugados_no_jugado', methods=['GET', 'POST'])
 @login_required
 def mas_jugados_no_jugado():
 	global selec
+	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
 	select_mas_jug = select_mas_jugados(id_user,0)
-	selecciones =[{'filtro':'Más Jugados: Aún no has jugado', 'select':select_mas_jug}]
+	selecciones =[{'filtro':txt['pg_ind_tit_selec_mas_jugados']+txt['pg_ind_tit_selec_no_jugados'], 'select':select_mas_jug}]
 	selec = selecciones
 	return redirect(url_for('mas_jugados2_no_jugado'))
 	
@@ -137,12 +148,13 @@ def mas_jugados_no_jugado():
 @app.route('/mas_jugados2_no_jugado', methods=['GET', 'POST'])
 @login_required
 def mas_jugados2_no_jugado():
+	txt = control_lenguaje(request.args, 'mas_jugados_no_jugado')
 	jg_ifrm = control_parametros(request.args)
-	texto='... los más jugados por todos los usuarios'
+	texto=txt['pg_ind_text_mas_jugados_todos']
 	
 	page = request.args.get('page', 1, type=int)
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec, 'mas_jugados2_no_jugado')
-	return render_template('index.html', title='Mas Jugados', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag=page, total_pag=total_pag, jg_ifrm=jg_ifrm)
+	return render_template('index.html', txt=txt, title='Mas Jugados', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag=page, total_pag=total_pag, jg_ifrm=jg_ifrm)
 		
 
 		
@@ -150,9 +162,10 @@ def mas_jugados2_no_jugado():
 @login_required
 def mejor_valorados_todos():
 	global selec
+	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
 	select_valor = select_mejor_valorados(id_user, 3)
-	selecciones =[{'filtro':'Mejor Valorados: Todos los Juegos', 'select':select_valor}]
+	selecciones =[{'filtro':txt['pg_ind_tit_selec_mejor_valorados']+txt['pg_ind_tit_selec_todos_juegos'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mejor_valorados2_todos'))
 	
@@ -160,21 +173,23 @@ def mejor_valorados_todos():
 @app.route('/mejor_valorados2_todos', methods=['GET', 'POST'])
 @login_required
 def mejor_valorados2_todos():
+	txt = control_lenguaje(request.args, 'mejor_valorados_todos')
 	jg_ifrm = control_parametros(request.args)
-	texto='... los mejor valorados por todos los usuarios'
+	texto=txt['pg_ind_text_mejor_valor_todos']
 	
 	page = request.args.get('page', 1, type=int)
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec,'mejor_valorados2_todos')
-	return render_template('index.html', title='Mejor Valorados', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
+	return render_template('index.html', txt=txt, title='Mejor Valorados', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
 
 			
 @app.route('/mejor_valorados_ya_jugado', methods=['GET', 'POST'])
 @login_required
 def mejor_valorados_ya_jugado():
 	global selec
+	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
 	select_valor = select_mejor_valorados(id_user, 1)
-	selecciones =[{'filtro':'Mejor Valorados: Jugados antes por ti', 'select':select_valor}]
+	selecciones =[{'filtro':txt['pg_ind_tit_selec_mejor_valorados']+txt['pg_ind_tit_selec_ya_jugados'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mejor_valorados2_ya_jugados'))
 	
@@ -182,21 +197,23 @@ def mejor_valorados_ya_jugado():
 @app.route('/mejor_valorados2_ya_jugados', methods=['GET', 'POST'])
 @login_required
 def mejor_valorados2_ya_jugados():
+	txt = control_lenguaje(request.args, 'mejor_valorados_ya_jugado')
 	jg_ifrm = control_parametros(request.args)
-	texto='... los mejor valorados por todos los usuarios'
+	texto=txt['pg_ind_text_mejor_valor_todos']
 	
 	page = request.args.get('page', 1, type=int)
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec,'mejor_valorados2_ya_jugados')
-	return render_template('index.html', title='Mejor Valorados', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
+	return render_template('index.html', txt=txt, title='Mejor Valorados', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
 		
 		
 @app.route('/mejor_valorados_no_jugado', methods=['GET', 'POST'])
 @login_required
 def mejor_valorados_no_jugado():
 	global selec
+	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
 	select_valor = select_mejor_valorados(id_user, 0)
-	selecciones =[{'filtro':'Mejor Valorados: Aún no has jugado', 'select':select_valor}]
+	selecciones =[{'filtro':txt['pg_ind_tit_selec_mejor_valorados']+txt['pg_ind_tit_selec_no_jugados'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mejor_valorados2_no_jugado'))
 	
@@ -204,12 +221,13 @@ def mejor_valorados_no_jugado():
 @app.route('/mejor_valorados2_no_jugado', methods=['GET', 'POST'])
 @login_required
 def mejor_valorados2_no_jugado():
+	txt = control_lenguaje(request.args, 'mejor_valorados_no_jugado')
 	jg_ifrm = control_parametros(request.args)
-	texto='... los mejor valorados por todos los usuarios'
+	texto=txt['pg_ind_text_mejor_valor_todos']
 	
 	page = request.args.get('page', 1, type=int)
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec,'mejor_valorados2_no_jugado')
-	return render_template('index.html', title='Mejor Valorados', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
+	return render_template('index.html', txt=txt, title='Mejor Valorados', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
 
 	
 
@@ -217,9 +235,10 @@ def mejor_valorados2_no_jugado():
 @login_required
 def mas_vistos_archive_todos():
 	global selec
+	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
 	select_valor = select_archive(id_user, 'visitas', 3)
-	selecciones =[{'filtro':'Mas vistos en archive.org: Todos los Juegos', 'select':select_valor}]
+	selecciones =[{'filtro':txt['pg_ind_tit_selec_mas_vistos']+txt['pg_ind_tit_selec_todos_juegos'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mas_vistos_archive2_todos'))
 	
@@ -227,21 +246,23 @@ def mas_vistos_archive_todos():
 @app.route('/mas_vistos_archive2_todos', methods=['GET', 'POST'])
 @login_required
 def mas_vistos_archive2_todos():
+	txt = control_lenguaje(request.args, 'mas_vistos_archive_todos')
 	jg_ifrm = control_parametros(request.args)
-	texto='... los más vistos en archive.org'
+	texto=txt['pg_ind_text_mas_vistos_archive']
 	
 	page = request.args.get('page', 1, type=int)
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec,'mas_vistos_archive2_todos')
-	return render_template('index.html', title='Mas Vistos', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
+	return render_template('index.html', txt=txt, title='Mas Vistos', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
 
 	
 @app.route('/mas_vistos_archive_ya_jugado', methods=['GET', 'POST'])
 @login_required
 def mas_vistos_archive_ya_jugado():
 	global selec
+	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
 	select_valor = select_archive(id_user, 'visitas', 1)
-	selecciones =[{'filtro':'Mas vistos en archive.org: Jugados antes por ti', 'select':select_valor}]
+	selecciones =[{'filtro':txt['pg_ind_tit_selec_mas_vistos']+txt['pg_ind_tit_selec_ya_jugados'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mas_vistos_archive2_ya_jugado'))
 	
@@ -249,12 +270,13 @@ def mas_vistos_archive_ya_jugado():
 @app.route('/mas_vistos_archive2_ya_jugado', methods=['GET', 'POST'])
 @login_required
 def mas_vistos_archive2_ya_jugado():
+	txt = control_lenguaje(request.args, 'mas_stars_archive_ya_jugado')
 	jg_ifrm = control_parametros(request.args)
-	texto='... los más vistos en archive.org'
+	texto=txt['pg_ind_text_mas_vistos_archive']
 	
 	page = request.args.get('page', 1, type=int)
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec,'mas_vistos_archive2_ya_jugado')
-	return render_template('index.html', title='Mas Vistos', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
+	return render_template('index.html', txt=txt, title='Mas Vistos', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
 
 
 	
@@ -262,9 +284,10 @@ def mas_vistos_archive2_ya_jugado():
 @login_required
 def mas_vistos_archive_no_jugado():
 	global selec
+	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
 	select_valor = select_archive(id_user, 'visitas', 0)
-	selecciones =[{'filtro':'Mas vistos en archive.org: Aún no has jugado', 'select':select_valor}]
+	selecciones =[{'filtro':txt['pg_ind_tit_selec_mas_vistos']+txt['pg_ind_tit_selec_no_jugados'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mas_vistos_archive2_no_jugado'))
 	
@@ -272,12 +295,13 @@ def mas_vistos_archive_no_jugado():
 @app.route('/mas_vistos_archive2_no_jugado', methods=['GET', 'POST'])
 @login_required
 def mas_vistos_archive2_no_jugado():
+	txt = control_lenguaje(request.args, 'mas_vistos_archive2_no_jugado')
 	jg_ifrm = control_parametros(request.args)
-	texto='... los más vistos en archive.org'
+	texto=txt['pg_ind_text_mas_vistos_archive']
 	
 	page = request.args.get('page', 1, type=int)
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec,'mas_vistos_archive2_no_jugado')
-	return render_template('index.html', title='Mas Vistos', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
+	return render_template('index.html', txt=txt, title='Mas Vistos', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
 	
 	
 	
@@ -285,9 +309,10 @@ def mas_vistos_archive2_no_jugado():
 @login_required
 def mas_stars_archive_todos():
 	global selec
+	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
 	select_valor = select_archive(id_user, 'favoritos', 3)
-	selecciones =[{'filtro':'Mas stars en archive.org: Todos los Juegos', 'select':select_valor}]
+	selecciones =[{'filtro':txt['pg_ind_tit_selec_mas_stars']+txt['pg_ind_tit_selec_todos_juegos'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mas_stars_archive2_todos'))
 	
@@ -295,12 +320,13 @@ def mas_stars_archive_todos():
 @app.route('/mas_stars_archive2_todos', methods=['GET', 'POST'])
 @login_required
 def mas_stars_archive2_todos():
+	txt = control_lenguaje(request.args, 'mas_stars_archive_todos')
 	jg_ifrm = control_parametros(request.args)
-	texto='... con más stars en archive.org'
+	texto=txt['pg_ind_text_mas_stars_archive']
 	
 	page = request.args.get('page', 1, type=int)
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec,'mas_stars_archive2_todos')
-	return render_template('index.html', title='Mas Stars', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
+	return render_template('index.html', txt=txt, title='Mas Stars', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
 
 	
 	
@@ -308,9 +334,10 @@ def mas_stars_archive2_todos():
 @login_required
 def mas_stars_archive_ya_jugado():
 	global selec
+	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
 	select_valor = select_archive(id_user, 'favoritos', 1)
-	selecciones =[{'filtro':'Mas stars en archive.org: Jugados antes por ti', 'select':select_valor}]
+	selecciones =[{'filtro':txt['pg_ind_tit_selec_mas_stars']+txt['pg_ind_tit_selec_ya_jugados'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mas_stars_archive2_ya_jugado'))
 	
@@ -318,12 +345,13 @@ def mas_stars_archive_ya_jugado():
 @app.route('/mas_stars_archive2_ya_jugado', methods=['GET', 'POST'])
 @login_required
 def mas_stars_archive2_ya_jugado():
+	txt = control_lenguaje(request.args, 'mas_stars_archive_ya_jugado')
 	jg_ifrm = control_parametros(request.args)
-	texto='... con más stars en archive.org'
+	texto=txt['pg_ind_text_mas_stars_archive']
 	
 	page = request.args.get('page', 1, type=int)
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec,'mas_stars_archive2_ya_jugado')
-	return render_template('index.html', title='Mas Stars', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
+	return render_template('index.html', txt=txt, title='Mas Stars', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
 
 	
 	
@@ -331,9 +359,10 @@ def mas_stars_archive2_ya_jugado():
 @login_required
 def mas_stars_archive_no_jugado():
 	global selec
+	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
 	select_valor = select_archive(id_user, 'favoritos', 0)
-	selecciones =[{'filtro':'Mas stars en archive.org: Aún no has jugado', 'select':select_valor}]
+	selecciones =[{'filtro':txt['pg_ind_tit_selec_mas_stars']+txt['pg_ind_tit_selec_no_jugados'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mas_stars_archive2_no_jugado'))
 	
@@ -341,21 +370,23 @@ def mas_stars_archive_no_jugado():
 @app.route('/mas_stars_archive2_no_jugado', methods=['GET', 'POST'])
 @login_required
 def mas_stars_archive2_no_jugado():
+	txt = control_lenguaje(request.args, 'mas_stars_archive_no_jugado')
 	jg_ifrm = control_parametros(request.args)
-	texto='... con más stars en archive.org'
+	texto=txt['pg_ind_text_mas_stars_archive']
 	
 	page = request.args.get('page', 1, type=int)
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec,'mas_stars_archive2_no_jugado')
-	return render_template('index.html', title='Mas Stars', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
+	return render_template('index.html', txt=txt, title='Mas Stars', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
 
 
 @app.route('/mas_comments_archive_todos', methods=['GET', 'POST'])
 @login_required
 def mas_comments_archive_todos():
 	global selec
+	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
 	select_valor = select_archive(id_user, 'comentarios', 3)
-	selecciones =[{'filtro':'Con más comentarios en archive.org: Todos los Juegos', 'select':select_valor}]
+	selecciones =[{'filtro':txt['pg_ind_tit_selec_mas_comments']+txt['pg_ind_tit_selec_todos_juegos'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mas_comments_archive2_todos'))
 	
@@ -363,21 +394,23 @@ def mas_comments_archive_todos():
 @app.route('/mas_comments_archive2_todos', methods=['GET', 'POST'])
 @login_required
 def mas_comments_archive2_todos():
+	txt = control_lenguaje(request.args, 'mas_comments_archive_todos')
 	jg_ifrm = control_parametros(request.args)
-	texto='... con más comentarios en archive.org'
+	texto=txt['pg_ind_text_mas_comments_archive']
 	
 	page = request.args.get('page', 1, type=int)
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec,'mas_comments_archive2_todos')
-	return render_template('index.html', title='Mas Comments', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
+	return render_template('index.html', txt=txt, title='Mas Comments', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
 
 
 @app.route('/mas_comments_archive_ya_jugado', methods=['GET', 'POST'])
 @login_required
 def mas_comments_archive_ya_jugado():
 	global selec
+	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
 	select_valor = select_archive(id_user, 'comentarios', 1)
-	selecciones =[{'filtro':'Con más comentarios en archive.org: Jugados antes por ti', 'select':select_valor}]
+	selecciones =[{'filtro':txt['pg_ind_tit_selec_mas_comments']+txt['pg_ind_tit_selec_ya_jugados'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mas_comments_archive2_ya_jugado'))
 	
@@ -385,12 +418,13 @@ def mas_comments_archive_ya_jugado():
 @app.route('/mas_comments_archive2_ya_jugado', methods=['GET', 'POST'])
 @login_required
 def mas_comments_archive2_ya_jugado():
+	txt = control_lenguaje(request.args, 'mas_comments_archive_ya_jugado')
 	jg_ifrm = control_parametros(request.args)
-	texto='... con más comentarios en archive.org'
+	texto=txt['pg_ind_text_mas_comments_archive']
 	
 	page = request.args.get('page', 1, type=int)
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec,'mas_comments_archive2_ya_jugado')
-	return render_template('index.html', title='Mas Comments', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
+	return render_template('index.html', txt=txt, title='Mas Comments', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
 
 	
 
@@ -398,9 +432,10 @@ def mas_comments_archive2_ya_jugado():
 @login_required
 def mas_comments_archive_no_jugado():
 	global selec
+	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
 	select_valor = select_archive(id_user, 'comentarios', 0)
-	selecciones =[{'filtro':'Con más comentarios en archive.org: Aún no has jugado', 'select':select_valor}]
+	selecciones =[{'filtro':txt['pg_ind_tit_selec_mas_comments']+txt['pg_ind_tit_selec_no_jugados'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mas_comments_archive2_no_jugado'))
 	
@@ -408,12 +443,13 @@ def mas_comments_archive_no_jugado():
 @app.route('/mas_comments_archive2_no_jugado', methods=['GET', 'POST'])
 @login_required
 def mas_comments_archive2_no_jugado():
+	txt = control_lenguaje(request.args, 'mas_comments_archive_no_jugado')
 	jg_ifrm = control_parametros(request.args)
-	texto='... con más comentarios en archive.org'
+	texto=txt['pg_ind_text_mas_comments_archive']
 	
 	page = request.args.get('page', 1, type=int)
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec,'mas_comments_archive2_no_jugado')
-	return render_template('index.html', title='Mas Comments', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
+	return render_template('index.html', txt=txt, title='Mas Comments', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag = page, total_pag = total_pag, jg_ifrm=jg_ifrm)
 
 
 	
@@ -421,9 +457,10 @@ def mas_comments_archive2_no_jugado():
 @login_required
 def busqueda():
 	global selec
+	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
 	palabra_busq = request.args.get('q')
-	text_filtro = 'Busqueda: ' + palabra_busq
+	text_filtro = txt['busqueda'] + palabra_busq
 	select_busq = select_busqueda(id_user, palabra_busq)
 	selecciones =[{'filtro': text_filtro, 'select':select_busq}]
 	selec = selecciones
@@ -433,11 +470,14 @@ def busqueda():
 @app.route('/busqueda2', methods=['GET', 'POST'])
 @login_required
 def busqueda2():
+	txt = control_lenguaje(request.args, 'busqueda')
 	jg_ifrm = control_parametros(request.args)
+	texto=txt['pg_ind_text_busqueda']
+	
 	page = request.args.get('page', 1, type=int)
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec,'busqueda2')
 	
-	return render_template('index.html', title='Busqueda', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag=page, total_pag=total_pag, jg_ifrm=jg_ifrm)
+	return render_template('index.html', txt=txt, title='Busqueda', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag=page, total_pag=total_pag, jg_ifrm=jg_ifrm)
 	
 	
 @app.route('/logout')
@@ -448,6 +488,7 @@ def logout():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+	txt = control_lenguaje(request.args)
 	if current_user.is_authenticated:
 		return redirect(url_for('index'))
 	form = RegistrationForm()
@@ -467,11 +508,11 @@ def register():
 		db.session.add(user)
 		db.session.commit()
 		
-		flash('Felicidades, ya eres un usuario registrado!')
+		flash(txt['pg_reg_registro_ok'])
 		return redirect(url_for('login'))
-	return render_template('register.html', title='Register', form=form)
+	return render_template('register.html', txt=txt, title='Register', form=form)
 
-
+	
 def control_parametros(param):
 	global selec
 	jg_ifrm = None
@@ -486,6 +527,60 @@ def control_parametros(param):
 		selec = actualiza_selec(juego, valor, selec)
 		
 	return jg_ifrm
+	
+	
+def control_lenguaje(param, origen=None):
+	global selec
+	if not 'lenguaje' in session:
+		session['lenguaje'] = 'es'
+		print('No hay -- ', session['lenguaje'])
+
+	if param.get('leng_cambio') != None:
+		session['lenguaje'] = param.get('leng_cambio')
+		print('Cambio -- ', session['lenguaje'])
+		
+		txt = carga_dicc_lenguaje(session['lenguaje'])
+		if origen == 'index':
+			selec[0]['filtro'] = txt['pg_ind_tit_selec_modelos']
+			selec[1]['filtro'] = txt['pg_ind_tit_selec_usuarios']
+			selec[2]['filtro'] = txt['pg_ind_tit_selec_productos']
+		elif origen == 'favoritos':
+			selec[0]['filtro'] = txt['pg_ind_tit_selec_favoritos']
+		elif origen == 'mas_jugados_todos':
+			selec[0]['filtro'] = txt['pg_ind_tit_selec_mas_jugados'] + txt['pg_ind_tit_selec_todos_juegos']
+		elif origen == 'mas_jugados_ya_jugado':
+			selec[0]['filtro'] = txt['pg_ind_tit_selec_mas_jugados'] + txt['pg_ind_tit_selec_ya_jugados']
+		elif origen == 'mas_jugado_no_jugado':
+			selec[0]['filtro'] = txt['pg_ind_tit_selec_mas_jugados'] + txt['pg_ind_tit_selec_no_jugados']
+		elif origen == 'mejor_valorados_todos':
+			selec[0]['filtro'] = txt['pg_ind_tit_selec_mejor_valorados'] + txt['pg_ind_tit_selec_todos_juegos']
+		elif origen == 'mejor_valorados_ya_jugado':
+			selec[0]['filtro'] = txt['pg_ind_tit_selec_mejor_valorados'] + txt['pg_ind_tit_selec_ya_jugados']
+		elif origen == 'mejor_valorados_no_jugado':
+			selec[0]['filtro'] = txt['pg_ind_tit_selec_mejor_valorados'] + txt['pg_ind_tit_selec_no_jugados']
+		elif origen == 'mas_vistos_archive_todos':
+			selec[0]['filtro'] = txt['pg_ind_tit_selec_mas_vistos'] + txt['pg_ind_tit_selec_todos_juegos']
+		elif origen == 'mas_vistos_archive_ya_jugado':
+			selec[0]['filtro'] = txt['pg_ind_tit_selec_mas_vistos'] + txt['pg_ind_tit_selec_ya_jugados']
+		elif origen == 'mas_vistos_archive_no_jugado':
+			selec[0]['filtro'] = txt['pg_ind_tit_selec_mas_vistos'] + txt['pg_ind_tit_selec_no_jugados']
+		elif origen == 'mas_stars_archive_todos':
+			selec[0]['filtro'] = txt['pg_ind_tit_selec_mas_stars'] + txt['pg_ind_tit_selec_todos_juegos']
+		elif origen == 'mas_stars_archive_ya_jugado':
+			selec[0]['filtro'] = txt['pg_ind_tit_selec_mas_stars'] + txt['pg_ind_tit_selec_ya_jugados']
+		elif origen == 'mas_stars_archive_no_jugado':
+			selec[0]['filtro'] = txt['pg_ind_tit_selec_mas_stars'] + txt['pg_ind_tit_selec_no_jugados']
+		elif origen == 'mas_comments_archive_todos':
+			selec[0]['filtro'] = txt['pg_ind_tit_selec_mas_comments'] + txt['pg_ind_tit_selec_todos_juegos']
+		elif origen == 'mas_comments_archive_ya_jugado':
+			selec[0]['filtro'] = txt['pg_ind_tit_selec_mas_comments'] + txt['pg_ind_tit_selec_ya_jugados']
+		elif origen == 'mas_comments_archive_no_jugado':
+			selec[0]['filtro'] = txt['pg_ind_tit_selec_mas_comments'] + txt['pg_ind_tit_selec_no_jugados']
+		elif origen == 'busqueda':
+			selec[0]['filtro'] = txt['pg_ind_tit_selec_busqueda']
+
+
+	return carga_dicc_lenguaje(session['lenguaje'])
 
 	
 def calc_paginacion(page, selec, origen):

@@ -3,6 +3,13 @@
 {% block app_content %}
 
 	<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+	
+	<script>
+		$(img_bandera).ready(function(){
+			var bandera = 'static/banderas/' + '{{ txt['sesion_leng'] }}' + '.png'
+			document.getElementById('img_bandera').src = bandera ;
+		});
+	</script>
 		
 	<script type="text/javascript">
 		function cambiaFoto(direccion){
@@ -56,10 +63,28 @@
 			cambiaFoto('dc');
 		}		
 		
-	</script>	
+	</script>
+	
+	<script>
+		$(document).ready(function(){
+			document.querySelector('#submit').value = '{{ txt['pg_reg_registrar'] }}' ;
+			if ($('#error_user').length != 0) {
+				document.querySelector('#error_user').innerHTML  = '{{ txt['pg_reg_error_user'] }}' ;
+			}
+			if ($('#error_email').length != 0) {
+				document.querySelector('#error_email').innerHTML  = '{{ txt['pg_reg_error_email'] }}' ;
+			}
+			if ($('#error_contr2').length != 0) {
+				document.querySelector('#error_contr2').innerHTML  = '{{ txt['pg_reg_error_contrasena_rep'] }}' ;
+			}
+			if ($('#error_contr').length != 0) {
+				document.querySelector('#error_contr').innerHTML  = '{{ txt['pg_reg_error_contrasena'] }}' ;
+			}
+		});
+	</script>
 	
 	<div>
-		<h2 style="width:500px; height:100px; text-align:center; margin: 0 auto">Registro</h2>
+		<h2 style="width:500px; height:100px; text-align:center; margin: 0 auto"> {{ txt['pg_reg_registro'] }}</h2>
 			
 		<div id="lineaFotos" style="width:500px; height:150px; text-align:center; margin: 0 auto; padding-left:55px">
 			<button id="btn1" type="button" style="margin:15px; float:left; width:8%" class="btn btn-default" aria-label="Left Align" onClick="cambiaFotoIz()">
@@ -93,34 +118,35 @@
 					{{ form.avatar(size=32) }}<br>
 				</p>
 				<p>
-					{{ form.username.label }}<br>
+					<span style="font-weight:bold; font-size:15px">  {{ txt['pg_reg_usuario'] }}</span> <br>
 					{{ form.username(size=32) }}<br>
 					{% for error in form.username.errors %}
-					<span style="color: red;">[{{ error }}]</span>
+					<span id="error_user" style="color: red;">[{{ error }}]</span>
 					{% endfor %}
 				</p>
 				<p>
-					{{ form.email.label }}<br>
+					<span style="font-weight:bold; font-size:15px">  {{ txt['pg_reg_email'] }}</span> <br>
 					{{ form.email(size=32) }}<br>
 					{% for error in form.email.errors %}
-					<span style="color: red;">[{{ error }}]</span>
+					<span id="error_email" style="color: red;">[{{ error }}]</span>
 					{% endfor %}
 				</p>
 				<p>
-					{{ form.password.label }}<br>
+					<span style="font-weight:bold; font-size:15px">  {{ txt['pg_reg_contrasena'] }}</span> <br>
 					{{ form.password(size=32) }}<br>
 					{% for error in form.password.errors %}
-					<span style="color: red;">[{{ error }}]</span>
+					<span id="error_contr" style="color: red;">[{{ error }}]</span>
 					{% endfor %}
 				</p>
 				<p>
-					{{ form.password2.label }}<br>
+					<span style="font-weight:bold; font-size:15px">  {{ txt['pg_reg_repe_contr'] }}</span> <br>
 					{{ form.password2(size=32) }}<br>
 					{% for error in form.password2.errors %}
-					<span style="color: red;">[{{ error }}]</span>
+					<span id="error_contr2" style="color: red;">[{{ error }}]</span>
 					{% endfor %}
 				</p>
-				<p>{{ form.submit() }}</p>
+				<br>
+				<p id='submit2'>{{ form.submit() }}</p>
 			</form>
 		</div>
 		
