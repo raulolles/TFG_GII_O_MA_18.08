@@ -4,7 +4,7 @@ from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, SearchForm
 from app.models import User
-from app.filtros.selectOfertas import select_predicciones, select_favoritos, select_aleatorio, select_mejor_valorados, select_mas_jugados, actualiza_selec, select_busqueda, select_archive
+from app.filtros.selectOfertas import select_predicciones, select_favoritos, select_aleatorio, select_mejor_valorados, select_mas_jugados, actualiza_selec, select_busqueda, select_archive, select_busqueda_avanz, calcula_limites_busq
 from app.filtros.actualizaFiltros import actualiza_filtros, actualiza_yr
 from datetime import datetime
 from app.internalizacion.lenguajes import crea_dicc_lenguajes, carga_dicc_lenguaje 
@@ -460,7 +460,7 @@ def busqueda():
 	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
 	palabra_busq = request.args.get('q')
-	text_filtro = txt['busqueda'] + palabra_busq
+	text_filtro = txt['pg_ind_tit_selec_busqueda'] + ':  '+ palabra_busq
 	select_busq = select_busqueda(id_user, palabra_busq)
 	selecciones =[{'filtro': text_filtro, 'select':select_busq}]
 	selec = selecciones
@@ -478,12 +478,29 @@ def busqueda2():
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec,'busqueda2')
 	
 	return render_template('index.html', txt=txt, title='Busqueda', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag=page, total_pag=total_pag, jg_ifrm=jg_ifrm)
+
 	
+@app.route('/busqueda_avanzada', methods=['GET', 'POST'])
+@login_required
+def busqueda_avanzada():
+	global selec
+	txt = control_lenguaje(request.args)
+	id_user = current_user.id - 1
+	
+	if request.args.get('vist_min') != None:
+		select_busq_avanz = select_busqueda_avanz(id_user, request.args);
+		selecciones =[{'filtro': txt['pg_ind_tit_selec_busqueda'], 'select':select_busq_avanz}]
+		selec = selecciones
+		return redirect(url_for('busqueda2'))	
+	else:
+		limites_busq = calcula_limites_busq(id_user);
+		return render_template('busqueda_avanzada.html', txt=txt, title='Busqueda', limites_busq=limites_busq)
+
 	
 @app.route('/logout')
 def logout():
-    logout_user()
-    return redirect(url_for('index'))
+	logout_user()
+	return redirect(url_for('index'))
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -533,11 +550,9 @@ def control_lenguaje(param, origen=None):
 	global selec
 	if not 'lenguaje' in session:
 		session['lenguaje'] = 'es'
-		print('No hay -- ', session['lenguaje'])
 
 	if param.get('leng_cambio') != None:
 		session['lenguaje'] = param.get('leng_cambio')
-		print('Cambio -- ', session['lenguaje'])
 		
 		txt = carga_dicc_lenguaje(session['lenguaje'])
 		if origen == 'index':

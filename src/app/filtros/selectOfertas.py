@@ -176,10 +176,16 @@ def select_busqueda(id_user, palabra_busq):
 	
 	# Crea lista con distancia (Levenshtein )
 	distancia = list()
+	palabra_busq = palabra_busq.lower()
 	for i in range(len(r0)):
-		palabra = items.loc[i][0]
+		palabra = items.loc[i][0].lower()
 		dist_min = np.inf
 		for p in palabra.split():
+			if palabra_busq in p:
+				dist = 0
+				if dist < dist_min:
+					dist_min = dist	
+					
 			dist = jel.levenshtein_distance(palabra_busq, p)
 			if dist < dist_min:
 				dist_min = dist
@@ -191,6 +197,91 @@ def select_busqueda(id_user, palabra_busq):
 	seleccion = ejecuta_seleccion (id_user, items, y, r, unid_select, tabla_slc)
 		
 	return seleccion
+	
+def select_busqueda_avanz(id_user, param):
+	unid_select = 100
+	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas()	
+	r0 = r[:,id_user]
+
+	# Crea tabla con id_jgo, vistas, stars, comment, valor, media, jugados, distancia(q)
+	ind = range(0, len(r0))
+	visitas = pd.to_numeric(items['visitas'].tolist())
+	star = pd.to_numeric(items['favoritos'].tolist())
+	comm = pd.to_numeric(items['comentarios'].tolist())
+	valor = y[:,id_user]
+	media = y.sum(axis = 1) / r.sum(axis = 1)
+	jugados = r.sum(axis=1)
+	distancia = range(0, len(r0))
+	l = np.concatenate((ind, r0, visitas, star, comm, valor, media, jugados, distancia))
+	l = l.reshape(9, len(r0))
+	l = l.T
+	
+	# Discriminación en funcion de jugados
+	if param['jugados'] == 'no_jugados':
+		l = l[np.where(l[:,1] == 0)]
+	elif param['jugados'] == 'si_jugados':
+		l = l[np.where(l[:,1] == 1)]
+		
+	# Seleccina de la tabla según parámetros
+	l = l [np.where(l[:,2] >= int(param['vist_min']))]
+	l = l [np.where(l[:,2] <= int(param['vist_max']))]
+	
+	l = l [np.where(l[:,3] >= int(param['star_min']))]
+	l = l [np.where(l[:,3] <= int(param['star_max']))]
+	
+	l = l [np.where(l[:,4] >= int(param['comm_min']))]
+	l = l [np.where(l[:,4] <= int(param['comm_max']))]
+
+	l = l [np.where(l[:,5] >= int(param['valo_min']))] 
+	l = l [np.where(l[:,5] <= int(param['valo_max']))]
+	
+	l = l [np.where(l[:,6] >= int(param['medi_min']))] 
+	l = l [np.where(l[:,6] <= int(param['medi_max']))]
+	
+	l = l [np.where(l[:,7] >= int(param['juga_min']))] 
+	l = l [np.where(l[:,7] <= int(param['juga_max']))]
+	
+	
+	# Si hay juegos en l y hay palabra de búsqueda
+	if len(l) > 0 and param['q'] != '':
+		palabra_busq = param['q'].lower()
+		for i in range(len(l)):
+			palabra = items.loc[l[i,0]][0].lower()
+			dist_min = np.inf
+			for p in palabra.split():
+				if palabra_busq in p:
+					dist = 0
+					if dist < dist_min:
+						dist_min = dist
+						
+				dist = jel.levenshtein_distance(palabra_busq, p)
+				if dist < dist_min:
+					dist_min = dist
+			l[i][8] = dist_min
+	
+		# ordena la tabla por distancia
+		l = l[l[:,8].argsort()]
+	
+	seleccion = ejecuta_seleccion (id_user, items, y, r, unid_select, l)
+
+	return seleccion
+	
+	
+def calcula_limites_busq(id_user):
+	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas()	
+	limites = {'vist_min': items['visitas'].min(), 
+			'vist_max': items['visitas'].max(), 
+			'star_min': items['favoritos'].min(), 
+			'star_max': items['favoritos'].max(), 
+			'comm_min': items['comentarios'].min(), 
+			'comm_max': items['comentarios'].max(), 
+			'valo_min': np.min(y[:,id_user]),
+			'valo_max': np.max(y[:,id_user]),
+			'medi_min': 0, 
+			'medi_max': 5, 
+			'juga_min': (np.min(r.sum(axis=1))),  
+			'juga_max': (np.max(r.sum(axis=1)))}
+	return limites
 
 	
 def crea_tabla_slc (criterio_slc, r0, ascendiente, jugado):

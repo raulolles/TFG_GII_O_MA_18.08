@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
+{% block menu %}
+	{% include 'menu.html' %}
+{% endblock %}
+
 {% block app_content %}
+
 	<div class="pager">
 		<div style="float:left; background-color: #f8f8f8; padding-left:25px; text-align:left; padding-right:25px; color:gray; width:30%">
 			<h2 style="text-align:center"> {{ txt['introd_1'] }} </h2>
