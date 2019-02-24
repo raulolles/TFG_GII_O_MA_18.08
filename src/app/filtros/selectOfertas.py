@@ -53,16 +53,16 @@ def imagen_puntuacion(puntuacion):
 	return str_imagen
 
 	
-def importa_tablas():
+def importa_tablas(origen_datos):
 	# Importa Matrices
-	y = np.load('app\static\datos\Y.npy')
-	r = np.load('app\static\datos\R.npy')
-	p_modelos = np.load('app\static\datos\P_Modelos.npy')
-	p_mem_users = np.load('app\static\datos\P_Mem_Users.npy')
-	p_mem_juegos = np.load('app\static\datos\P_Mem_Juegos.npy')
+	y = np.load(origen_datos+'Y.npy')
+	r = np.load(origen_datos+'R.npy')
+	p_modelos = np.load(origen_datos+'P_Modelos.npy')
+	p_mem_users = np.load(origen_datos+'P_Mem_Users.npy')
+	p_mem_juegos = np.load(origen_datos+'P_Mem_Juegos.npy')
 	
 	# Importa Datos del scraping
-	items = read_table('app\static\datos\datosJuegos.csv',header=None,sep=';',encoding='ISO-8859-1')
+	items = read_table(origen_datos+'datosJuegos.csv',header=None,sep=';',encoding='ISO-8859-1')
 	items.columns = ['juego','fabricante','visitas', 'favoritos', 'comentarios', 'url']
 
 	return y, r, p_modelos, p_mem_users, p_mem_juegos, items
@@ -81,9 +81,9 @@ def select_de_matriz(y,p,r,id_user,unid_select,items):
 	return seleccion
 	
 	
-def select_predicciones(id_user):
+def select_predicciones(origen_datos, id_user):
 	unid_select = 6
-	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas()
+	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
 
 	select_users = select_de_matriz(y,p_mem_users,r,id_user,unid_select,items)	
 	select_juegos = select_de_matriz(y,p_mem_juegos,r,id_user,unid_select,items)
@@ -92,9 +92,9 @@ def select_predicciones(id_user):
 	return select_modelos, select_users, select_juegos
 
 	
-def select_aleatorio():
+def select_aleatorio(origen_datos):
 	unid_select = 6
-	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas()
+	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
 	n_juegos,n_users = y.shape
 	n_juegos = n_juegos-1
 	seleccion = list()
@@ -110,9 +110,9 @@ def select_aleatorio():
 	return seleccion
 
 	
-def select_favoritos(id_user):
+def select_favoritos(origen_datos, id_user):
 	unid_select = 100
-	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas()
+	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
 	r0 = r[:,id_user]
 	
 	# Crea una matriz en la que se guardan los indices, R0 y P0
@@ -126,9 +126,9 @@ def select_favoritos(id_user):
 	return seleccion
 
 	
-def select_mas_jugados(id_user, jugado):
+def select_mas_jugados(origen_datos, id_user, jugado):
 	unid_select = 100
-	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas()
+	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
 	r0 = r[:,id_user]
 	
 	# Crea una matriz en la que se guardan los indices, R0 y suma juegos
@@ -140,9 +140,9 @@ def select_mas_jugados(id_user, jugado):
 	return seleccion
 
 	
-def select_mejor_valorados(id_user, jugado):
+def select_mejor_valorados(origen_datos, id_user, jugado):
 	unid_select = 100
-	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas()
+	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
 	r0 = r[:,id_user]
 	
 	# Crea una matriz en la que se guardan los indices, R0 y suma juegos
@@ -155,9 +155,9 @@ def select_mejor_valorados(id_user, jugado):
 	return seleccion
 
 
-def select_archive(id_user,columna,jugado):
+def select_archive(origen_datos, id_user,columna,jugado):
 	unid_select = 200
-	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas()
+	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
 	r0 = r[:,id_user]
 	
 	# Crea una matriz en la que se guardan los indices, R0 y suma juegos
@@ -169,9 +169,9 @@ def select_archive(id_user,columna,jugado):
 	return seleccion
 
 	
-def select_busqueda(id_user, palabra_busq):
+def select_busqueda(origen_datos, id_user, palabra_busq):
 	unid_select = 100
-	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas()
+	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
 	r0 = r[:,id_user]
 	
 	# Crea lista con distancia (Levenshtein )
@@ -198,9 +198,9 @@ def select_busqueda(id_user, palabra_busq):
 		
 	return seleccion
 	
-def select_busqueda_avanz(id_user, param):
+def select_busqueda_avanz(origen_datos, id_user, param):
 	unid_select = 100
-	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas()	
+	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
 	r0 = r[:,id_user]
 
 	# Crea tabla con id_jgo, vistas, stars, comment, valor, media, jugados, distancia(q)
@@ -267,8 +267,8 @@ def select_busqueda_avanz(id_user, param):
 	return seleccion
 	
 	
-def calcula_limites_busq(id_user):
-	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas()	
+def calcula_limites_busq(origen_datos, id_user):
+	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
 	limites = {'vist_min': items['visitas'].min(), 
 			'vist_max': items['visitas'].max(), 
 			'star_min': items['favoritos'].min(), 

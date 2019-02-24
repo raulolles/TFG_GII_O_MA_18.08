@@ -13,6 +13,7 @@ import copy
 import numpy as np
 
 selec = list()
+origen_datos = "app/static/datos/"
 
 @app.route('/')
 @app.route('/index', methods=['GET', 'POST'])
@@ -22,7 +23,7 @@ def index():
 	global selec
 	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
-	select_modelos, select_users, select_juegos = select_predicciones(id_user)
+	select_modelos, select_users, select_juegos = select_predicciones(origen_datos, id_user)
 	selecciones = [{'filtro': txt['pg_ind_tit_selec_modelos'], 'select':select_modelos}, {'filtro': txt['pg_ind_tit_selec_usuarios'], 'select':select_users}, {'filtro': txt['pg_ind_tit_selec_productos'], 'select':select_juegos}]
 	selec = selecciones
 	return redirect(url_for('index2'))
@@ -43,7 +44,7 @@ def login():
 	if current_user.is_authenticated:
 		return redirect(url_for('index'))
 	form = LoginForm()
-	select_aleat = select_aleatorio()
+	select_aleat = select_aleatorio(origen_datos)
 	selecciones =[{'filtro':'', 'select':select_aleat}]
 	if form.validate_on_submit():
 		user = User.query.filter_by(username=form.username.data).first()
@@ -65,7 +66,7 @@ def favoritos():
 		global selec
 		txt = control_lenguaje(request.args)
 		id_user = current_user.id - 1
-		select_fav = select_favoritos(id_user)
+		select_fav = select_favoritos(origen_datos, id_user)
 		selecciones =[{'filtro':txt['pg_ind_tit_selec_favoritos'], 'select':select_fav}]
 		selec = selecciones
 		return redirect(url_for('favoritos2'))
@@ -90,7 +91,7 @@ def mas_jugados_todos():
 	global selec
 	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
-	select_mas_jug = select_mas_jugados(id_user,3)
+	select_mas_jug = select_mas_jugados(origen_datos, id_user,3)
 	selecciones =[{'filtro': txt['pg_ind_tit_selec_mas_jugados']+txt['pg_ind_tit_selec_todos_juegos'], 'select':select_mas_jug}]
 	selec = selecciones
 	return redirect(url_for('mas_jugados2_todos'))
@@ -115,7 +116,7 @@ def mas_jugados_ya_jugado():
 	global selec
 	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
-	select_mas_jug = select_mas_jugados(id_user,1)
+	select_mas_jug = select_mas_jugados(origen_datos, id_user,1)
 	selecciones =[{'filtro': txt['pg_ind_tit_selec_mas_jugados']+txt['pg_ind_tit_selec_ya_jugados'], 'select':select_mas_jug}]
 	selec = selecciones
 	return redirect(url_for('mas_jugados2_ya_jugado'))
@@ -139,7 +140,7 @@ def mas_jugados_no_jugado():
 	global selec
 	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
-	select_mas_jug = select_mas_jugados(id_user,0)
+	select_mas_jug = select_mas_jugados(origen_datos, id_user,0)
 	selecciones =[{'filtro':txt['pg_ind_tit_selec_mas_jugados']+txt['pg_ind_tit_selec_no_jugados'], 'select':select_mas_jug}]
 	selec = selecciones
 	return redirect(url_for('mas_jugados2_no_jugado'))
@@ -164,7 +165,7 @@ def mejor_valorados_todos():
 	global selec
 	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
-	select_valor = select_mejor_valorados(id_user, 3)
+	select_valor = select_mejor_valorados(origen_datos, id_user, 3)
 	selecciones =[{'filtro':txt['pg_ind_tit_selec_mejor_valorados']+txt['pg_ind_tit_selec_todos_juegos'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mejor_valorados2_todos'))
@@ -188,7 +189,7 @@ def mejor_valorados_ya_jugado():
 	global selec
 	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
-	select_valor = select_mejor_valorados(id_user, 1)
+	select_valor = select_mejor_valorados(origen_datos, id_user, 1)
 	selecciones =[{'filtro':txt['pg_ind_tit_selec_mejor_valorados']+txt['pg_ind_tit_selec_ya_jugados'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mejor_valorados2_ya_jugados'))
@@ -212,7 +213,7 @@ def mejor_valorados_no_jugado():
 	global selec
 	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
-	select_valor = select_mejor_valorados(id_user, 0)
+	select_valor = select_mejor_valorados(origen_datos, id_user, 0)
 	selecciones =[{'filtro':txt['pg_ind_tit_selec_mejor_valorados']+txt['pg_ind_tit_selec_no_jugados'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mejor_valorados2_no_jugado'))
@@ -237,7 +238,7 @@ def mas_vistos_archive_todos():
 	global selec
 	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
-	select_valor = select_archive(id_user, 'visitas', 3)
+	select_valor = select_archive(origen_datos, id_user, 'visitas', 3)
 	selecciones =[{'filtro':txt['pg_ind_tit_selec_mas_vistos']+txt['pg_ind_tit_selec_todos_juegos'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mas_vistos_archive2_todos'))
@@ -261,7 +262,7 @@ def mas_vistos_archive_ya_jugado():
 	global selec
 	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
-	select_valor = select_archive(id_user, 'visitas', 1)
+	select_valor = select_archive(origen_datos, id_user, 'visitas', 1)
 	selecciones =[{'filtro':txt['pg_ind_tit_selec_mas_vistos']+txt['pg_ind_tit_selec_ya_jugados'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mas_vistos_archive2_ya_jugado'))
@@ -286,7 +287,7 @@ def mas_vistos_archive_no_jugado():
 	global selec
 	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
-	select_valor = select_archive(id_user, 'visitas', 0)
+	select_valor = select_archive(origen_datos, id_user, 'visitas', 0)
 	selecciones =[{'filtro':txt['pg_ind_tit_selec_mas_vistos']+txt['pg_ind_tit_selec_no_jugados'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mas_vistos_archive2_no_jugado'))
@@ -311,7 +312,7 @@ def mas_stars_archive_todos():
 	global selec
 	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
-	select_valor = select_archive(id_user, 'favoritos', 3)
+	select_valor = select_archive(origen_datos, id_user, 'favoritos', 3)
 	selecciones =[{'filtro':txt['pg_ind_tit_selec_mas_stars']+txt['pg_ind_tit_selec_todos_juegos'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mas_stars_archive2_todos'))
@@ -336,7 +337,7 @@ def mas_stars_archive_ya_jugado():
 	global selec
 	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
-	select_valor = select_archive(id_user, 'favoritos', 1)
+	select_valor = select_archive(origen_datos, id_user, 'favoritos', 1)
 	selecciones =[{'filtro':txt['pg_ind_tit_selec_mas_stars']+txt['pg_ind_tit_selec_ya_jugados'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mas_stars_archive2_ya_jugado'))
@@ -361,7 +362,7 @@ def mas_stars_archive_no_jugado():
 	global selec
 	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
-	select_valor = select_archive(id_user, 'favoritos', 0)
+	select_valor = select_archive(origen_datos, id_user, 'favoritos', 0)
 	selecciones =[{'filtro':txt['pg_ind_tit_selec_mas_stars']+txt['pg_ind_tit_selec_no_jugados'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mas_stars_archive2_no_jugado'))
@@ -385,7 +386,7 @@ def mas_comments_archive_todos():
 	global selec
 	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
-	select_valor = select_archive(id_user, 'comentarios', 3)
+	select_valor = select_archive(origen_datos, id_user, 'comentarios', 3)
 	selecciones =[{'filtro':txt['pg_ind_tit_selec_mas_comments']+txt['pg_ind_tit_selec_todos_juegos'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mas_comments_archive2_todos'))
@@ -409,7 +410,7 @@ def mas_comments_archive_ya_jugado():
 	global selec
 	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
-	select_valor = select_archive(id_user, 'comentarios', 1)
+	select_valor = select_archive(origen_datos, id_user, 'comentarios', 1)
 	selecciones =[{'filtro':txt['pg_ind_tit_selec_mas_comments']+txt['pg_ind_tit_selec_ya_jugados'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mas_comments_archive2_ya_jugado'))
@@ -434,7 +435,7 @@ def mas_comments_archive_no_jugado():
 	global selec
 	txt = control_lenguaje(request.args)
 	id_user = current_user.id - 1
-	select_valor = select_archive(id_user, 'comentarios', 0)
+	select_valor = select_archive(origen_datos, id_user, 'comentarios', 0)
 	selecciones =[{'filtro':txt['pg_ind_tit_selec_mas_comments']+txt['pg_ind_tit_selec_no_jugados'], 'select':select_valor}]
 	selec = selecciones
 	return redirect(url_for('mas_comments_archive2_no_jugado'))
@@ -461,7 +462,7 @@ def busqueda():
 	id_user = current_user.id - 1
 	palabra_busq = request.args.get('q')
 	text_filtro = txt['pg_ind_tit_selec_busqueda'] + ':  '+ palabra_busq
-	select_busq = select_busqueda(id_user, palabra_busq)
+	select_busq = select_busqueda(origen_datos, id_user, palabra_busq)
 	selecciones =[{'filtro': text_filtro, 'select':select_busq}]
 	selec = selecciones
 	return redirect(url_for('busqueda2'))
@@ -488,12 +489,12 @@ def busqueda_avanzada():
 	id_user = current_user.id - 1
 	
 	if request.args.get('vist_min') != None:
-		select_busq_avanz = select_busqueda_avanz(id_user, request.args);
+		select_busq_avanz = select_busqueda_avanz(origen_datos, id_user, request.args);
 		selecciones =[{'filtro': txt['pg_ind_tit_selec_busqueda'], 'select':select_busq_avanz}]
 		selec = selecciones
 		return redirect(url_for('busqueda2'))	
 	else:
-		limites_busq = calcula_limites_busq(id_user);
+		limites_busq = calcula_limites_busq(origen_datos, id_user);
 		return render_template('busqueda_avanzada.html', txt=txt, title='Busqueda', limites_busq=limites_busq)
 
 	
