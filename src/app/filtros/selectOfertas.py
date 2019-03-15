@@ -265,7 +265,7 @@ def select_busqueda_avanz(origen_datos, id_user, param):
 					dist = 0
 					if dist < dist_min:
 						dist_min = dist
-						
+
 				dist = jel.levenshtein_distance(palabra_busq, p)
 				if dist < dist_min:
 					dist_min = dist
