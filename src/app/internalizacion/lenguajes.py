@@ -8,7 +8,7 @@ def crea_dicc_lenguajes():
 
 	diccionario_todos_lenguajes = {'es' :
 			{'sesion_leng':'es',
-			
+
 			'menu_inicio':'Inicio',
 			'menu_favoritos':'Favoritos',
 			'menu_en_retrogaming':'en Retrogaming',
@@ -25,9 +25,9 @@ def crea_dicc_lenguajes():
 			'menu_busq_avan':'Búsqueda',
 			'menu_login':'Inicio Sesión',
 			'menu_logout':'Salir',
-			
+
 			'saludo':'Hola!',
-			
+
 			'pg_login_iniciar_sesion':'Iniciar Sesion',
 			'pg_login_usuario':'Nombre Usuario',
 			'pg_login_contras':'Contraseña',
@@ -38,7 +38,7 @@ def crea_dicc_lenguajes():
 			'pg_login_error1':'[ Valor Requerido ]',
 			'pg_login_men_error_base':'Por favor, identifíquese para acceder a esta página.',
 			'pg_login_error_ident':'Nombre de usuario o contraseña erronea',
-			
+
 			'pg_reg_registro':'Registro',
 			'pg_reg_usuario':'Usuario',
 			'pg_reg_email':'Email',
@@ -55,34 +55,34 @@ def crea_dicc_lenguajes():
 			'pg_ind_tit_selec_modelos':'Modelos',
 			'pg_ind_tit_selec_usuarios':'Usuarios',
 			'pg_ind_tit_selec_productos':'Productos',
-			
+
 			'pg_ind_text_favoritos':'...tus juegos favoritos',
 			'pg_ind_tit_selec_favoritos':'Favoritos',
-			
+
 			'pg_ind_text_mas_jugados_todos':'...los más jugados por todos los usuarios',
 			'pg_ind_text_mejor_valor_todos':'...los mejor valorados por todos los usuarios',
-			
-			
+
+
 			'pg_ind_tit_selec_mas_jugados':'Más Jugados',
 			'pg_ind_tit_selec_mejor_valorados':'Mejor Valorados',
 
 			'pg_ind_tit_selec_todos_juegos':' : Todos los juegos',
 			'pg_ind_tit_selec_ya_jugados':' : Jugados antes por ti',
 			'pg_ind_tit_selec_no_jugados':' : Aún no has jugado',
-			
+
 			'pg_ind_text_mas_vistos_archive':'...los más vistos en archive.org',
 			'pg_ind_text_mas_stars_archive':'...con más stars en archive.org',
 			'pg_ind_text_mas_comments_archive':'...con más comentarios en archive.org',
-			
+
 			'pg_ind_tit_selec_mas_vistos':'Más Vistos en archive.org',
 			'pg_ind_tit_selec_mas_stars':'Con más stars en archive.org',
 			'pg_ind_tit_selec_mas_comments':'Con más comentarios en archive.org',
-			
+
 			'pg_ind_text_busqueda':'...los resultados de tu búsqueda',
 			'pg_ind_tit_selec_busqueda':'Busqueda',
-			
+
 			'pg_ind_no_resultados':'Uppps!!!    Parece que no hay resultados para esta búsqueda',
-			
+
 			'pg_bsq_avan_en_archive':'en Archive.org',
 			'pg_bsq_avan_en_retrogaming':'en Retrogaming',
 			'pg_bsq_avan_vistas':'Vistas',
@@ -97,19 +97,19 @@ def crea_dicc_lenguajes():
 			'pg_bsq_avan_jgd_no':'No Jugados',
 			'pg_bsq_avan_por_palabra':'Busqueda por palabra',
 			'pg_bsq_avan_enviar':'Enviar',
-			
+
 			'tira_juego_juega':'juega en su web',
 			'tira_juego_tu_valoracion':'tu valoración',
-			
+
 			'iframe_cerrar':'Cerrar Juego',
-			
+
 			'paginacion_pagina':'página',
 			'paginacion_de':'de',
 			'paginacion_inicio':'inicio',
 			'paginacion_final':'final',
 			'paginacion_anterior':'anterior',
 			'paginacion_siguient':'siguiente',
-
+			
 			'introd_1':'Retrogaming Recommender',
 			'introd_2':'Commodore 64',
 			'introd_3':'Podrás ver más de 10.000 juegos de la mítica commodore 64.',
@@ -119,7 +119,7 @@ def crea_dicc_lenguajes():
 			},
 		'en' :
 			{'sesion_leng':'en',
-			
+
 			'menu_inicio':'Home',
 			'menu_favoritos':'Favorites',
 			'menu_en_retrogaming':'in Retrogaming',
@@ -136,9 +136,9 @@ def crea_dicc_lenguajes():
 			'menu_busq_avan':'Search',
 			'menu_login':'Login',
 			'menu_logout':'Logout',
-			
+
 			'saludo':'Hi!',
-			
+
 			'pg_login_iniciar_sesion':'Login',
 			'pg_login_usuario':'User',
 			'pg_login_contras':'Password',
@@ -149,7 +149,7 @@ def crea_dicc_lenguajes():
 			'pg_login_error1':'[ This field is required ]',
 			'pg_login_men_error_base':'Please log in to access this page.',
 			'pg_login_error_ident':'Invalid username or password',
-			
+
 			'pg_reg_registro':'Register',
 			'pg_reg_usuario':'User',
 			'pg_reg_email':'Email',
@@ -161,35 +161,35 @@ def crea_dicc_lenguajes():
 			'pg_reg_error_email':'[ Invalid email address ]',
 			'pg_reg_error_contrasena':'[ Invalid password ]',
 			'pg_reg_error_contrasena_rep':'[ Field must be equal to password ] ',
-			
+
 			'pg_ind_text':'...we think you\'ll like',
 			'pg_ind_tit_selec_modelos':'Models',
 			'pg_ind_tit_selec_usuarios':'Users',
 			'pg_ind_tit_selec_productos':'Products',
 			'pg_ind_text_favoritos':'...your favorite games',
 			'pg_ind_tit_selec_favoritos':'Favorites',
-			
+
 			'pg_ind_text_mas_jugados_todos':'...the most played by all users',
 			'pg_ind_text_mejor_valor_todos':'...the best rated by all users',
 			'pg_ind_tit_selec_mas_jugados':'Most Played',
 			'pg_ind_tit_selec_mejor_valorados':'Top Rated',
-			
+
 			'pg_ind_tit_selec_todos_juegos':' : All the games',
 			'pg_ind_tit_selec_ya_jugados':' : Played before by you',
 			'pg_ind_tit_selec_no_jugados':' : You have not played yet',
-			
+
 			'pg_ind_text_mas_vistos_archive':'...the most viewed in archive.org',
 			'pg_ind_text_mas_stars_archive':'...with more stars in archive.org',
 			'pg_ind_text_mas_comments_archive':'...with more comments on archive.org',
 			'pg_ind_tit_selec_mas_vistos':'Most Viewed on archive.org',
 			'pg_ind_tit_selec_mas_stars':'With more stars on archive.org',
 			'pg_ind_tit_selec_mas_comments':'With more comments on archive.org',
-			
+
 			'pg_ind_text_busqueda':'...the results of your search',
 			'pg_ind_tit_selec_busqueda':'Search',
-			
+
 			'pg_ind_no_resultados':'Uppps!!!    there seems to be no results for this search',
-			
+
 			'pg_bsq_avan_en_archive':'in Archive.org',
 			'pg_bsq_avan_en_retrogaming':'in Retrogaming',
 			'pg_bsq_avan_vistas':'Views',
@@ -204,12 +204,12 @@ def crea_dicc_lenguajes():
 			'pg_bsq_avan_jgd_no':'Not Played',
 			'pg_bsq_avan_por_palabra':'Search by word',
 			'pg_bsq_avan_enviar':'Send',
-			
+
 			'tira_juego_juega':'play on your website',
 			'tira_juego_tu_valoracion':'your valuation',
-			
+
 			'iframe_cerrar':'Close Game',
-			
+
 			'paginacion_pagina':'page',
 			'paginacion_de':'of',
 			'paginacion_inicio':'star',
@@ -226,7 +226,7 @@ def crea_dicc_lenguajes():
 			},
 		'fr' :
 			{'sesion_leng':'fr',
-			
+
 			'menu_inicio':'Accueil',
 			'menu_favoritos':'Favori',
 			'menu_en_retrogaming':'sur Retrogaming',
@@ -243,9 +243,9 @@ def crea_dicc_lenguajes():
 			'menu_busq_avan':'Recherche',
 			'menu_login':'Login',
 			'menu_logout':'Logout',
-			
+
 			'saludo':'Salut!',
-			
+
 			'pg_login_iniciar_sesion':'Commencer Session',
 			'pg_login_usuario':'Nom Utilisateur',
 			'pg_login_contras':'Mot de Passe',
@@ -256,7 +256,7 @@ def crea_dicc_lenguajes():
 			'pg_login_error1':'[ Valeur Obligatoire ]',
 			'pg_login_men_error_base':'S\'il vous plait, Veuillez vous connecter pour accéder à cette page.',
 			'pg_login_error_ident':'Nom d\'utilisateur ou mot de passe incorrect',
-			
+
 			'pg_reg_registro':'Inscription',
 			'pg_reg_usuario':'Utilisateur',
 			'pg_reg_email':'Email',
@@ -273,34 +273,33 @@ def crea_dicc_lenguajes():
 			'pg_ind_tit_selec_modelos':'Modèles',
 			'pg_ind_tit_selec_usuarios':'Utilisateurs',
 			'pg_ind_tit_selec_productos':'Produits',
-			
+
 			'pg_ind_text_favoritos':'...vos jeux préférés',
 			'pg_ind_tit_selec_favoritos':'Favoris',
-			
+
 			'pg_ind_text_mas_jugados_todos':'...le plus joué par tous les utilisateurs',
 			'pg_ind_text_mejor_valor_todos':'...le mieux noté par tous les utilisateurs',
-			
-			
+
 			'pg_ind_tit_selec_mas_jugados':'Plus Joué',
 			'pg_ind_tit_selec_mejor_valorados':'Mieux Notés',
 
 			'pg_ind_tit_selec_todos_juegos':' : Tous les jeux',
 			'pg_ind_tit_selec_ya_jugados':' : Joué devant vous',
 			'pg_ind_tit_selec_no_jugados':' : Vous n\'avez pas encore joué',
-			
+
 			'pg_ind_text_mas_vistos_archive':'...les plus vues sur archive.org',
 			'pg_ind_text_mas_stars_archive':'...avec plus d\'étoiles sur archive.org',
 			'pg_ind_text_mas_comments_archive':'...avec plus de commentaires sur archive.org',
-			
+
 			'pg_ind_tit_selec_mas_vistos':'Plus vu archive.org',
 			'pg_ind_tit_selec_mas_stars':'Avec plus stars sur archive.org',
 			'pg_ind_tit_selec_mas_comments':'Avec plus comentarios sur archive.org',
-			
+
 			'pg_ind_text_busqueda':'...les résultats de votre recherche',
 			'pg_ind_tit_selec_busqueda':'Recherche',
-			
+
 			'pg_ind_no_resultados':'Uppps!!!    Il semble n\'y avoir aucun résultat pour cette recherche',
-			
+
 			'pg_bsq_avan_en_archive':'sur Archive.org',
 			'pg_bsq_avan_en_retrogaming':'sur Retrogaming',
 			'pg_bsq_avan_vistas':'Vues',
@@ -315,12 +314,12 @@ def crea_dicc_lenguajes():
 			'pg_bsq_avan_jgd_no':'Pas Joués',
 			'pg_bsq_avan_por_palabra':'Recherche par mot',
 			'pg_bsq_avan_enviar':'Envoyer',
-			
+
 			'tira_juego_juega':'jouer sur le web',
 			'tira_juego_tu_valoracion':'votre évaluation',
-			
+
 			'iframe_cerrar':'Fermer Jeu',
-			
+
 			'paginacion_pagina':'page',
 			'paginacion_de':'de',
 			'paginacion_inicio':'début',
@@ -337,7 +336,7 @@ def crea_dicc_lenguajes():
 			},
 		'rm' :
 			{'sesion_leng':'rm',
-			
+
 			'menu_inicio':'început',
 			'menu_favoritos':'Favorite',
 			'menu_en_retrogaming':'în Retrogaming',
@@ -354,9 +353,9 @@ def crea_dicc_lenguajes():
 			'menu_busq_avan':'Căutare',
 			'menu_login':'Login',
 			'menu_logout':'Logout',
-			
+
 			'saludo':'Salut!',
-			
+
 			'pg_login_iniciar_sesion':'Autentificare',
 			'pg_login_usuario':'Nume de utilizator',
 			'pg_login_contras':'Parola',
@@ -367,7 +366,7 @@ def crea_dicc_lenguajes():
 			'pg_login_error1':'[ Datele necesare ]',
 			'pg_login_men_error_base':'Vă rugăm să vă autentificați pentru a accesa această pagină.',
 			'pg_login_error_ident':'Nume de utilizator sau parolă incorecte',
-			
+
 			'pg_reg_registro':'Înregistrare',
 			'pg_reg_usuario':'Utilizator',
 			'pg_reg_email':'Email',
@@ -384,34 +383,34 @@ def crea_dicc_lenguajes():
 			'pg_ind_tit_selec_modelos':'Models',
 			'pg_ind_tit_selec_usuarios':'Utilizators',
 			'pg_ind_tit_selec_productos':'Produse',
-			
+
 			'pg_ind_text_favoritos':'...jocurile tale preferate',
 			'pg_ind_tit_selec_favoritos':'Favorite',
-			
+
 			'pg_ind_text_mas_jugados_todos':'...cele mai jucate de toți utilizatorii',
 			'pg_ind_text_mejor_valor_todos':'...cels mai bine valorați de toți utilizatorii',
-			
-			
+
+
 			'pg_ind_tit_selec_mas_jugados':'Cele Mai Jucate',
 			'pg_ind_tit_selec_mejor_valorados':'Cele Mai votate',
 
 			'pg_ind_tit_selec_todos_juegos':' : Toate jocurile',
 			'pg_ind_tit_selec_ya_jugados':' : Jucate înainte de tine',
 			'pg_ind_tit_selec_no_jugados':' : Nu ai jucat încă',
-			
+
 			'pg_ind_text_mas_vistos_archive':'...cele mai vizualizate în arhive.org',
 			'pg_ind_text_mas_stars_archive':'...cu mai multe stele de pe archive.org',
 			'pg_ind_text_mas_comments_archive':'...cu mai multe comentarii pe arhive.org',
-			
+
 			'pg_ind_tit_selec_mas_vistos':'Cele mai vizionate pe arhive.org',
 			'pg_ind_tit_selec_mas_stars':'Cu mai multe stele de pe archive.org',
 			'pg_ind_tit_selec_mas_comments':'Cu mai multe comentarii pe arhive.org',
-			
+
 			'pg_ind_text_busqueda':'...rezultatele căutării tale',
 			'pg_ind_tit_selec_busqueda':'Căutare',
-			
+
 			'pg_ind_no_resultados':'Uppps!!!    Se pare că nu există rezultate pentru această căutare',
-			
+
 			'pg_bsq_avan_en_archive':'în Archive.org',
 			'pg_bsq_avan_en_retrogaming':'în Retrogaming',
 			'pg_bsq_avan_vistas':'Vizualizari',

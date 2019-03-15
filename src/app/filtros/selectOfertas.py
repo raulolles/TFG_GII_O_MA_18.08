@@ -6,17 +6,17 @@ import jellyfish as jel
 
 def calcula_estad_juego(juego,y,r):
 	tabla_estad = list()
-	
+
 	y_juego = y[juego,:]
 	users_jugado = int(np.sum(r[juego,:]))
 	puntuacion = np.sum(y_juego)
 	puntuacion_media = puntuacion/users_jugado
 	imagen_punt = imagen_puntuacion(puntuacion_media)
-	
+
 	tabla_estad.append(str("{:.1f}".format(puntuacion_media)))
 	tabla_estad.append(imagen_punt)
 	tabla_estad.append(users_jugado)
-	
+
 	tabla_estad.append(len(np.where(y_juego ==5)[0]))
 	tabla_estad.append(len(np.where(y_juego ==4)[0]))
 	tabla_estad.append(len(np.where(y_juego ==3)[0]))
@@ -24,7 +24,7 @@ def calcula_estad_juego(juego,y,r):
 	tabla_estad.append(len(np.where(y_juego ==1)[0]))
 
 	return tabla_estad
-	
+
 
 def imagen_puntuacion(puntuacion):
 	if puntuacion > -0.5 and puntuacion <= 0.4:
@@ -49,7 +49,7 @@ def imagen_puntuacion(puntuacion):
 		str_imagen = "simbolos/star_cuatro_med.png"
 	else:
 		str_imagen = "simbolos/star_cinco.png"
-	
+
 	return str_imagen
 
 
@@ -79,8 +79,8 @@ def select_de_matriz(y,p,r,id_user,unid_select,items):
 	seleccion = ejecuta_seleccion (id_user, items, y, r, unid_select, tabla_slc)
 
 	return seleccion
-	
-	
+
+
 def select_predicciones(origen_datos, id_user):
 	unid_select = 6
 	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
@@ -91,7 +91,7 @@ def select_predicciones(origen_datos, id_user):
 
 	return select_modelos, select_users, select_juegos
 
-	
+
 def select_aleatorio(origen_datos):
 	unid_select = 6
 	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
@@ -100,58 +100,58 @@ def select_aleatorio(origen_datos):
 	seleccion = list()
 	linea_select_a = list()
 	linea_select_b = list()
-	
+
 	for i in range (unid_select):
 		juego = random.randint(0,n_juegos)
 		linea_select_a = items.loc[juego].values.tolist()
 		linea_select_b = calcula_estad_juego(juego,y,r)
 		seleccion.append(linea_select_a + linea_select_b)
-		
+
 	return seleccion
 
-	
+
 def select_favoritos(origen_datos, id_user):
 	unid_select = 100
 	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
 	r0 = r[:,id_user]
-	
+
 	# Crea una matriz en la que se guardan los indices, R0 y P0
 	y0= y[:,id_user]
-	
+
 	jugado = 1
-	
+
 	tabla_slc = crea_tabla_slc(y0, r0, True, jugado)
 	seleccion = ejecuta_seleccion (id_user, items, y, r, unid_select, tabla_slc)
-		
+
 	return seleccion
 
-	
+
 def select_mas_jugados(origen_datos, id_user, jugado):
 	unid_select = 100
 	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
 	r0 = r[:,id_user]
-	
+
 	# Crea una matriz en la que se guardan los indices, R0 y suma juegos
 	veces_jug = r.sum(axis = 1)
 
 	tabla_slc = crea_tabla_slc(veces_jug, r0, True, jugado)
 	seleccion = ejecuta_seleccion (id_user, items, y, r, unid_select, tabla_slc)
-	
+
 	return seleccion
 
-	
+
 def select_mejor_valorados(origen_datos, id_user, jugado):
 	unid_select = 100
 	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
 	r0 = r[:,id_user]
-	
+
 	# Crea una matriz en la que se guardan los indices, R0 y suma juegos
 	valor_medio = y.sum(axis = 1) / r.sum(axis = 1)
 	valor_medio[np.where(np.isnan(valor_medio))] = 0
 
 	tabla_slc = crea_tabla_slc(valor_medio, r0, True, jugado)
 	seleccion = ejecuta_seleccion (id_user, items, y, r, unid_select, tabla_slc)
-		
+
 	return seleccion
 
 
@@ -159,21 +159,21 @@ def select_archive(origen_datos, id_user,columna,jugado):
 	unid_select = 200
 	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
 	r0 = r[:,id_user]
-	
+
 	# Crea una matriz en la que se guardan los indices, R0 y suma juegos
 	datos = pd.to_numeric(items[columna].tolist())
 
 	tabla_slc = crea_tabla_slc(datos, r0, True, jugado)
 	seleccion = ejecuta_seleccion (id_user, items, y, r, unid_select, tabla_slc)
-		
+
 	return seleccion
 
-	
+
 def select_busqueda(origen_datos, id_user, palabra_busq):
 	unid_select = 100
 	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
 	r0 = r[:,id_user]
-	
+
 	# Crea lista con distancia (Levenshtein )
 	distancia = list()
 	palabra_busq = palabra_busq.lower()
@@ -192,12 +192,12 @@ def select_busqueda(origen_datos, id_user, palabra_busq):
 		distancia.append(dist_min)
 
 	jugado = 3
-	
+
 	tabla_slc = crea_tabla_slc(distancia, r0, False, jugado)
 	seleccion = ejecuta_seleccion (id_user, items, y, r, unid_select, tabla_slc)
-		
+
 	return seleccion
-	
+
 def select_busqueda_avanz(origen_datos, id_user, param):
 	unid_select = 100
 	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
@@ -215,33 +215,33 @@ def select_busqueda_avanz(origen_datos, id_user, param):
 	l = np.concatenate((ind, r0, visitas, star, comm, valor, media, jugados, distancia))
 	l = l.reshape(9, len(r0))
 	l = l.T
-	
+
 	# Discriminación en funcion de jugados
 	if param['jugados'] == 'no_jugados':
 		l = l[np.where(l[:,1] == 0)]
 	elif param['jugados'] == 'si_jugados':
 		l = l[np.where(l[:,1] == 1)]
-		
+
 	# Seleccina de la tabla según parámetros
 	l = l [np.where(l[:,2] >= int(param['vist_min']))]
 	l = l [np.where(l[:,2] <= int(param['vist_max']))]
-	
+
 	l = l [np.where(l[:,3] >= int(param['star_min']))]
 	l = l [np.where(l[:,3] <= int(param['star_max']))]
-	
+
 	l = l [np.where(l[:,4] >= int(param['comm_min']))]
 	l = l [np.where(l[:,4] <= int(param['comm_max']))]
 
 	l = l [np.where(l[:,5] >= int(param['valo_min']))]
 	l = l [np.where(l[:,5] <= int(param['valo_max']))]
-	
+
 	l = l [np.where(l[:,6] >= int(param['medi_min']))]
 	l = l [np.where(l[:,6] <= int(param['medi_max']))]
-	
+
 	l = l [np.where(l[:,7] >= int(param['juga_min']))]
 	l = l [np.where(l[:,7] <= int(param['juga_max']))]
-	
-	
+
+
 	# Si hay juegos en l y hay palabra de búsqueda
 	if len(l) > 0 and param['q'] != '':
 		palabra_busq = param['q'].lower()
@@ -258,15 +258,15 @@ def select_busqueda_avanz(origen_datos, id_user, param):
 				if dist < dist_min:
 					dist_min = dist
 			l[i][8] = dist_min
-	
+
 		# ordena la tabla por distancia
 		l = l[l[:,8].argsort()]
-	
+
 	seleccion = ejecuta_seleccion (id_user, items, y, r, unid_select, l)
 
 	return seleccion
-	
-	
+
+
 def calcula_limites_busq(origen_datos, id_user):
 	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
 	limites = {'vist_min': items['visitas'].min(),
@@ -282,8 +282,8 @@ def calcula_limites_busq(origen_datos, id_user):
 			'juga_min': (np.min(r.sum(axis=1))),
 			'juga_max': (np.max(r.sum(axis=1)))}
 	return limites
-
 	
+
 def crea_tabla_slc (criterio_slc, r0, ascendiente, jugado):
 	# Crea una matriz en la que se guardan los indices, R0 y criterio_slc
 	ind = range(0, len(r0))
@@ -295,10 +295,10 @@ def crea_tabla_slc (criterio_slc, r0, ascendiente, jugado):
 		l = l[np.where(l[:,1] == 0)]  # deja en la matriz los juegos no jugados
 	elif jugado == 1:
 		l = l[np.where(l[:,1] == 1)]  # deja en la matriz los juegos si jugados
-		
+
 	# Ordena la matriz
 	l = l[l[:,2].argsort()]
-	
+
 	if ascendiente:
 		l = np.flipud(l)
 
@@ -308,48 +308,48 @@ def ejecuta_seleccion (id_user, items, y, r, unid_select, l):
 	seleccion = list()
 	linea_select_a = list()
 	linea_select_b = list()
-
+	
 	if unid_select > len(l):
 		unid_select = len(l)
-		
+
 	for i in range (unid_select):
 		juego = int(l[i][0])
 		linea_select_a = items.loc[juego].values.tolist()
 		linea_select_b = calcula_estad_juego(juego,y,r)
 		valor = int(y[juego,id_user])
-		
+
 		seleccion.append(linea_select_a + linea_select_b + [valor, juego, id_user])
-		
+
 	return seleccion
-	
+
 
 def actualiza_selec(id_juego, valor, seleccion_total):
 	# Recorre todas las selecciones que incluya el total
 	for slc_parcial in seleccion_total:
-	
+
 		# Recorre la seleccion en particular
 		for slc in slc_parcial['select']:
-		
+
 			slc = actualiza_selec2(slc, id_juego, valor)
-		
+
 		# fin for parcial
 	#fin for total
 	return seleccion_total
-	
-	
+
+
 def actualiza_selec2(slc, id_juego, valor):
 	# Actualiza los valores del juego si existe
 	if slc[15] == id_juego:
-		
+
 		# slc[8] == Numero usuarios     #slc[14] == Puntuacion
 		# slc[9] - slc[13] == 5 stars - 1 star
-		
+
 		if slc[14] == 0:
 			slc[8] = slc[8] + 1
 		else:
 			ind_menos = 14 - slc[14]
 			slc[ind_menos] = slc[ind_menos] - 1
-					
+
 		if valor == 0:
 			slc[8] = slc[8] - 1
 		else:

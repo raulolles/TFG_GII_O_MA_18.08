@@ -1,5 +1,5 @@
 import numpy as np
-	
+
 def actualiza_filtros():
 	# Importa Matrices
 	Y = np.load('app\static\datos\Y.npy')

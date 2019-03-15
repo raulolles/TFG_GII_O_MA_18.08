@@ -26,21 +26,21 @@ while continua:
 
         # En elem: Nombre_Juego, Empresa, eye, favorite, comment
         elem = driver.find_elements_by_xpath("//div [@class='item-ia hov']")
-        
+
         # En elem2 Imagenes Links
         elem2 = driver.find_elements_by_class_name("item-img ")
-        
+
         if len(elem) > 0:
             n_juegos = n_juegos +  len(elem)
             pag = pag+1
             pagina = pagina +1
-            
+
             i=0
             while i < len(elem):
                 juego = elem[i].text.split('\n')
                 long= len(juego)
                 juego[1] = juego[1][3:]
-                
+
                 link = elem2[i].get_attribute('src').split('/')
                 link_ok = link[len(link)-1]
 
@@ -53,12 +53,12 @@ while continua:
                         n = n + (int(vistas[j+pos_coma+1]) * 10**(2-j))
                     vistas = str(n)
 				# fin Corrige coma
-				
+
                 csvfile.write(juego[0]+";"+juego[1]+";"+vistas+";"+juego[long-3]+";"+juego[long-1]+";"+link_ok+"\n")
                 i = i+1
         else:
             continua = False
-                
+
         print("   --> Paginas Analizadas   : ", pag)
         print("   --> Juegos Referenciados : ", n_juegos)
 
