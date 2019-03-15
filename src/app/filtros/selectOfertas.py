@@ -197,7 +197,7 @@ def select_busqueda(origen_datos, id_user, palabra_busq):
 				dist = 0
 				if dist < dist_min:
 					dist_min = dist
-					
+
 			dist = jel.levenshtein_distance(palabra_busq, p)
 			if dist < dist_min:
 				dist_min = dist
