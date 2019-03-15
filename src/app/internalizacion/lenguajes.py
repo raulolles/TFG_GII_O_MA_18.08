@@ -447,7 +447,7 @@ def crea_dicc_lenguajes():
 			'introd_6':'Lista de jocuri se bazează pe cele disponibile pe site-ul archive.org'
 			}
 		}
-	
+
 	return diccionario_todos_lenguajes
 
 def carga_dicc_lenguaje(lenguaje):

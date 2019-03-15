@@ -30,7 +30,7 @@ class RegistrationForm(FlaskForm):
 		if user is not None:
 			raise ValidationError('Por favor, use un email diferente')
 
-			
+
 class SearchForm(FlaskForm):
 	q = StringField(('Search'), validators=[DataRequired()])
 

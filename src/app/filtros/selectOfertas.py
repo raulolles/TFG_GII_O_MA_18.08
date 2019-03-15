@@ -101,13 +101,11 @@ def select_aleatorio(origen_datos):
 	linea_select_a = list()
 	linea_select_b = list()
 	
-	j=0
 	for i in range (unid_select):
 		juego = random.randint(0,n_juegos)
 		linea_select_a = items.loc[juego].values.tolist()
 		linea_select_b = calcula_estad_juego(juego,y,r)
 		seleccion.append(linea_select_a + linea_select_b)
-		j=i
 		
 	return seleccion
 
@@ -272,16 +270,16 @@ def select_busqueda_avanz(origen_datos, id_user, param):
 def calcula_limites_busq(origen_datos, id_user):
 	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
 	limites = {'vist_min': items['visitas'].min(), 
-			'vist_max': items['visitas'].max(), 
-			'star_min': items['favoritos'].min(), 
-			'star_max': items['favoritos'].max(), 
-			'comm_min': items['comentarios'].min(), 
-			'comm_max': items['comentarios'].max(), 
+			'vist_max': items['visitas'].max(),
+			'star_min': items['favoritos'].min(),
+			'star_max': items['favoritos'].max(),
+			'comm_min': items['comentarios'].min(),
+			'comm_max': items['comentarios'].max(),
 			'valo_min': np.min(y[:,id_user]),
 			'valo_max': np.max(y[:,id_user]),
-			'medi_min': 0, 
-			'medi_max': 5, 
-			'juga_min': (np.min(r.sum(axis=1))),  
+			'medi_min': 0,
+			'medi_max': 5,
+			'juga_min': (np.min(r.sum(axis=1))),
 			'juga_max': (np.max(r.sum(axis=1)))}
 	return limites
 
@@ -364,25 +362,4 @@ def actualiza_selec2(slc, id_juego, valor):
 		slc[7] = imagen_puntuacion((slc[9]*5 + slc[10]*4 + slc[11]*3 + slc[12]*2 + slc[13])/slc[8])
 	
 	return slc
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+

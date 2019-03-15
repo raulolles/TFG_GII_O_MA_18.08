@@ -43,7 +43,7 @@ def actualiza_yr(juego, user, valor):
 		R[juego,user] = 0
 	else:
 		R[juego,user] = 1
-	
+
 	# Guarda tablas actualizadas
 	np.save('app\static\datos\Y', Y)
 	np.save('app\static\datos\R', R)

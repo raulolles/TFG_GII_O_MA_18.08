@@ -1,7 +1,7 @@
 """users table
 
 Revision ID: f263aa658ae6
-Revises: 
+Revises:
 Create Date: 2018-12-31 08:25:00.665399
 
 """

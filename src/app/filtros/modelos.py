@@ -59,7 +59,7 @@ initParam = np.random.rand(1, n_users*n_feat + n_juegos*n_feat)
 parameters = (minimize(cofi_cost_func_minimize,initParam,method="CG",jac=True,
 				   options={'maxiter':max_iter, "disp":True})).x
 
-						   
+
 # Matriz X y Theta
 x = parameters[0 : n_juegos*n_feat]
 x = x.reshape(n_juegos, n_feat)

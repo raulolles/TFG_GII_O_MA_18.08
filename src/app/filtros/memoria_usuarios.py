@@ -12,7 +12,7 @@ nJuegos,nUsers = y.shape
 # Crea matriz similitud (Coef.Corr.Pearson)
 sim = np.corrcoef(y, rowvar=False)
 
-# Da valor -1 a sim donde varianza de Y sea 0 (sin volores con NaN)   
+# Da valor -1 a sim donde varianza de Y sea 0 (sin volores con NaN)
 sim[np.where(np.isnan(sim))] = -1
 
 # Crea matriz Predicción Filtro Colab. Usuarios
@@ -34,7 +34,7 @@ for ind_p in ind_predecir:
     ind_jugado = np.transpose(np.where(r[juego,:]==1))
     ind_jugado = ind_jugado[:,0]
     ind_jugado_red = list(filter(lambda x: (sim[x,user]>0), ind_jugado))
-	
+
     # Controla que no hay ningún usuario con sim > 0
     if len(ind_jugado_red) > 0:
         for i_user_jdo in ind_jugado_red:

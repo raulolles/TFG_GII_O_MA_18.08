@@ -46,26 +46,26 @@ while continua:
 
                 #Corrige coma en separación miles
                 vistas = juego[long-5]
-                pos_coma = vistas.find(",") 
+                pos_coma = vistas.find(",")
                 if pos_coma >= 0:
                     n = int(vistas[: pos_coma])*1000
                     for j in range(len(vistas)-pos_coma-1):
                         n = n + (int(vistas[j+pos_coma+1]) * 10**(2-j))
-                    vistas = str(n)                
+                    vistas = str(n)
 				# fin Corrige coma
 				
                 csvfile.write(juego[0]+";"+juego[1]+";"+vistas+";"+juego[long-3]+";"+juego[long-1]+";"+link_ok+"\n")
                 i = i+1
-        else: 
+        else:
             continua = False
                 
         print("   --> Paginas Analizadas   : ", pag)
-        print("   --> Juegos Referenciados : ", n_juegos)    
+        print("   --> Juegos Referenciados : ", n_juegos)
 		
     except:
         continua = False
-        
-        
+
+
 
 csvfile.close()
 driver.close()

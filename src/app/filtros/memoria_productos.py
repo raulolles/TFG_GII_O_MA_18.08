@@ -11,7 +11,7 @@ n_juegos,n_users = y.shape
 
 # Crea matriz similitud (Coef.Corr.Pearson)
 sim = np.corrcoef(y, rowvar=True)
-# Da valor -1 a sim donde varianza de Y sea 0 (sin volores con NaN)   
+# Da valor -1 a sim donde varianza de Y sea 0 (sin volores con NaN)
 sim[np.where(np.isnan(sim))] = -1
 
 # Crea matriz Predicción Filtro Colab. Productos
@@ -30,7 +30,7 @@ for ind_p in ind_predecir:
     # Indices a eliminar por sim negativa o ser el propio Juego
     ind_elim = np.array(np.where(sim[:,juego]<=0))
     ind_elim = np.append(ind_elim, juego)
-    
+
     rating_user = np.delete(y[:,user], ind_elim)
     sim_juego = np.delete(sim[:,juego], ind_elim)
 
