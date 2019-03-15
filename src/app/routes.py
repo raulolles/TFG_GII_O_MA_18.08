@@ -552,7 +552,7 @@ def control_lenguaje(param, origen=None):
 
 	if param.get('leng_cambio') != None:
 		session['lenguaje'] = param.get('leng_cambio')
-		
+
 		txt = carga_dicc_lenguaje(session['lenguaje'])
 		if origen == 'index':
 			selec[0]['filtro'] = txt['pg_ind_tit_selec_modelos']

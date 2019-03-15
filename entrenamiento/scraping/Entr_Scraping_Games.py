@@ -18,7 +18,7 @@ print('Primera prueba Scraping (Python Selenium) sobre web\n')
 
 if not "C64" in driver.title:
 	raise AssertionError()
-	
+
 print("  --> Driver Title: \n", driver.title, "\n")
 
 titulo = driver.find_element_by_tag_name('title')

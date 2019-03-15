@@ -61,7 +61,7 @@ while continua:
                 
         print("   --> Paginas Analizadas   : ", pag)
         print("   --> Juegos Referenciados : ", n_juegos)
-		
+
     except:
         continua = False
 

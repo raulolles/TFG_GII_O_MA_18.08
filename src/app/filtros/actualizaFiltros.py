@@ -36,9 +36,9 @@ def actualiza_yr(juego, user, valor):
 
 	if valor == '--' :
 		valor = 0
-	
+
 	Y[juego,user] = valor
-	
+
 	if valor == 0:
 		R[juego,user] = 0
 	else:

@@ -9,8 +9,8 @@ import csv
 
 
 class PruebasUnitarias(unittest.TestCase):
-    
-            
+
+
 	def test_datos_juegos(self):
 		with open(r'..\src\app\static\datos\datosJuegos.csv', 'r') as csvfile:
 			file = csv.reader(csvfile, delimiter ='\n')

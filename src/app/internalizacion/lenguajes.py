@@ -56,7 +56,7 @@ def crea_dicc_lenguajes():
 			'pg_ind_tit_selec_usuarios':'Usuarios',
 			'pg_ind_tit_selec_productos':'Productos',
 			
-			'pg_ind_text_favoritos':'...tus juegos favoritos',			
+			'pg_ind_text_favoritos':'...tus juegos favoritos',
 			'pg_ind_tit_selec_favoritos':'Favoritos',
 			
 			'pg_ind_text_mas_jugados_todos':'...los más jugados por todos los usuarios',
@@ -89,7 +89,7 @@ def crea_dicc_lenguajes():
 			'pg_bsq_avan_stars':'Stars',
 			'pg_bsq_avan_comment':'Comentarios',
 			'pg_bsq_avan_valor':'Tu Valoracion',
-			'pg_bsq_avan_media':'Media',	
+			'pg_bsq_avan_media':'Media',
 			'pg_bsq_avan_jugadores':'Jugadores',
 			'pg_bsq_avan_de_los_jugados':'¿De los que has jugado antes?',
 			'pg_bsq_avan_jgd_todos':'Todos los Juegos',
@@ -115,7 +115,7 @@ def crea_dicc_lenguajes():
 			'introd_3':'Podrás ver más de 10.000 juegos de la mítica commodore 64.',
 			'introd_4':'Dispondrás de predicciones de los juegos que mejor se adaptan a tu trayectoria de juego.',
 			'introd_5':'Puntua cada juego según tu preferencias. Lista y busca juegos según han sido puntuados en Retrogaming o en Archive.org',
-			'introd_6':'La lista de juegos está basada en los que se encuetran disponibles en web archive.org'			
+			'introd_6':'La lista de juegos está basada en los que se encuetran disponibles en web archive.org'
 			},
 		'en' :
 			{'sesion_leng':'en',
@@ -196,7 +196,7 @@ def crea_dicc_lenguajes():
 			'pg_bsq_avan_stars':'Stars',
 			'pg_bsq_avan_comment':'Comments',
 			'pg_bsq_avan_valor':'Your Rate',
-			'pg_bsq_avan_media':'Mean',	
+			'pg_bsq_avan_media':'Mean',
 			'pg_bsq_avan_jugadores':'Players',
 			'pg_bsq_avan_de_los_jugados':'¿Have you played before?',
 			'pg_bsq_avan_jgd_todos':'All the Games',
@@ -274,7 +274,7 @@ def crea_dicc_lenguajes():
 			'pg_ind_tit_selec_usuarios':'Utilisateurs',
 			'pg_ind_tit_selec_productos':'Produits',
 			
-			'pg_ind_text_favoritos':'...vos jeux préférés',			
+			'pg_ind_text_favoritos':'...vos jeux préférés',
 			'pg_ind_tit_selec_favoritos':'Favoris',
 			
 			'pg_ind_text_mas_jugados_todos':'...le plus joué par tous les utilisateurs',
@@ -385,7 +385,7 @@ def crea_dicc_lenguajes():
 			'pg_ind_tit_selec_usuarios':'Utilizators',
 			'pg_ind_tit_selec_productos':'Produse',
 			
-			'pg_ind_text_favoritos':'...jocurile tale preferate',			
+			'pg_ind_text_favoritos':'...jocurile tale preferate',
 			'pg_ind_tit_selec_favoritos':'Favorite',
 			
 			'pg_ind_text_mas_jugados_todos':'...cele mai jucate de toți utilizatorii',
@@ -426,12 +426,12 @@ def crea_dicc_lenguajes():
 			'pg_bsq_avan_jgd_no':'Nu Jucate',
 			'pg_bsq_avan_por_palabra':'Căutare după Cuvânt',
 			'pg_bsq_avan_enviar':'Trimite',
-			
+
 			'tira_juego_juega':'juacă pe site-ul lor.',
 			'tira_juego_tu_valoracion':'evaluarea ta',
-			
+
 			'iframe_cerrar':'Închide Jocul',
-			
+
 			'paginacion_pagina':'pagina',
 			'paginacion_de':'de',
 			'paginacion_inicio':'început',

@@ -355,7 +355,7 @@ def actualiza_selec2(slc, id_juego, valor):
 		else:
 			ind_mas = 14 - valor
 			slc[ind_mas] = slc[ind_mas] + 1
-			
+
 		# Puntuacion y  Media
 		slc[14] = valor
 		slc[6] = str("{:.1f}".format((slc[9]*5 + slc[10]*4 + slc[11]*3 + slc[12]*2 + slc[13])/slc[8]))
