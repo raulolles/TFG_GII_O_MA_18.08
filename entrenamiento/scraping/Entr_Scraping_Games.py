@@ -39,7 +39,7 @@ for e in elem:
     long= len(juego)
     juego[1] = juego[1][3:]
     print(juego)
-            
+
 
 print('\n  --> Total Juegos: ', len(elem))
 

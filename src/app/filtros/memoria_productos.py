@@ -25,7 +25,7 @@ for ind_p in ind_predecir:
 
     juego = ind_p[0]
     user = ind_p[1]
-    
+
     #if (sim[:,juego]<=0).all is not None:
     # Indices a eliminar por sim negativa o ser el propio Juego
     ind_elim = np.array(np.where(sim[:,juego]<=0))

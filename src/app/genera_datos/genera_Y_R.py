@@ -19,11 +19,11 @@ n_valoraciones = 100
 
 # Genera valoraciones aleatorias entre 0 y 5
 def genera_tablas(n_juegos):
-    
+
     # Crea Y R a zeros
     y = np.zeros ((n_juegos, n_users), dtype = np.float)
     r = np.zeros ((n_juegos, n_users), dtype = np.int)
-    
+
     # Rellena Y
     for user in range(n_users):
         for j in range(n_valoraciones):
@@ -31,7 +31,7 @@ def genera_tablas(n_juegos):
 
     # Genera R
     r[y>0]=1
-    
+
     # Guarda Matrices
     np.save('../static/datos/Y', y)
     np.save('../static/datos/R', r)

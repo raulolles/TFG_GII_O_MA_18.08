@@ -17,8 +17,8 @@ class PruebasUnitarias(unittest.TestCase):
 			for linea_juego in file:
 				self.assertEqual (linea_juego[0].count(";"),5)
 
-            
-            
+
+
 	def test_y (self):
 		y = np.load(r'..\src\app\static\datos\Y.npy')
 		n_users = y.shape[1]
@@ -34,8 +34,8 @@ class PruebasUnitarias(unittest.TestCase):
 		r2[y>0]=1
 		self.assertEqual(r.all(), r2.all())
 
-            
-        
+
+
 	def test_p_modelos (self):
 		p_modelos = np.load(r'..\src\app\static\datos\P_Modelos.npy')
 		p2 = np.where(p_modelos < 0)

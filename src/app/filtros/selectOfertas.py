@@ -85,7 +85,7 @@ def select_predicciones(origen_datos, id_user):
 	unid_select = 6
 	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
 
-	select_users = select_de_matriz(y,p_mem_users,r,id_user,unid_select,items)	
+	select_users = select_de_matriz(y,p_mem_users,r,id_user,unid_select,items)
 	select_juegos = select_de_matriz(y,p_mem_juegos,r,id_user,unid_select,items)
 	select_modelos = select_de_matriz(y,p_modelos,r,id_user,unid_select,items)
 
@@ -149,7 +149,7 @@ def select_mejor_valorados(origen_datos, id_user, jugado):
 	valor_medio = y.sum(axis = 1) / r.sum(axis = 1)
 	valor_medio[np.where(np.isnan(valor_medio))] = 0
 
-	tabla_slc = crea_tabla_slc(valor_medio, r0, True, jugado)	
+	tabla_slc = crea_tabla_slc(valor_medio, r0, True, jugado)
 	seleccion = ejecuta_seleccion (id_user, items, y, r, unid_select, tabla_slc)
 		
 	return seleccion
@@ -184,7 +184,7 @@ def select_busqueda(origen_datos, id_user, palabra_busq):
 			if palabra_busq in p:
 				dist = 0
 				if dist < dist_min:
-					dist_min = dist	
+					dist_min = dist
 					
 			dist = jel.levenshtein_distance(palabra_busq, p)
 			if dist < dist_min:
@@ -232,13 +232,13 @@ def select_busqueda_avanz(origen_datos, id_user, param):
 	l = l [np.where(l[:,4] >= int(param['comm_min']))]
 	l = l [np.where(l[:,4] <= int(param['comm_max']))]
 
-	l = l [np.where(l[:,5] >= int(param['valo_min']))] 
+	l = l [np.where(l[:,5] >= int(param['valo_min']))]
 	l = l [np.where(l[:,5] <= int(param['valo_max']))]
 	
-	l = l [np.where(l[:,6] >= int(param['medi_min']))] 
+	l = l [np.where(l[:,6] >= int(param['medi_min']))]
 	l = l [np.where(l[:,6] <= int(param['medi_max']))]
 	
-	l = l [np.where(l[:,7] >= int(param['juga_min']))] 
+	l = l [np.where(l[:,7] >= int(param['juga_min']))]
 	l = l [np.where(l[:,7] <= int(param['juga_max']))]
 	
 	
@@ -269,7 +269,7 @@ def select_busqueda_avanz(origen_datos, id_user, param):
 	
 def calcula_limites_busq(origen_datos, id_user):
 	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
-	limites = {'vist_min': items['visitas'].min(), 
+	limites = {'vist_min': items['visitas'].min(),
 			'vist_max': items['visitas'].max(),
 			'star_min': items['favoritos'].min(),
 			'star_max': items['favoritos'].max(),
@@ -360,6 +360,6 @@ def actualiza_selec2(slc, id_juego, valor):
 		slc[14] = valor
 		slc[6] = str("{:.1f}".format((slc[9]*5 + slc[10]*4 + slc[11]*3 + slc[12]*2 + slc[13])/slc[8]))
 		slc[7] = imagen_puntuacion((slc[9]*5 + slc[10]*4 + slc[11]*3 + slc[12]*2 + slc[13])/slc[8])
-	
+
 	return slc
 

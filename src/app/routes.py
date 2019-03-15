@@ -6,7 +6,7 @@ from app.forms import LoginForm, RegistrationForm
 from app.models import User
 from app.filtros.selectOfertas import select_predicciones, select_favoritos, select_aleatorio, select_mejor_valorados, select_mas_jugados, actualiza_selec, select_busqueda, select_archive, select_busqueda_avanz, calcula_limites_busq
 from app.filtros.actualizaFiltros import actualiza_filtros, actualiza_yr
-from app.internalizacion.lenguajes import carga_dicc_lenguaje 
+from app.internalizacion.lenguajes import carga_dicc_lenguaje
 
 import copy
 
@@ -490,7 +490,7 @@ def busqueda_avanzada():
 		select_busq_avanz = select_busqueda_avanz(origen_datos, id_user, request.args);
 		selecciones =[{'filtro': txt['pg_ind_tit_selec_busqueda'], 'select':select_busq_avanz}]
 		selec = selecciones
-		return redirect(url_for('busqueda2'))	
+		return redirect(url_for('busqueda2'))
 	else:
 		limites_busq = calcula_limites_busq(origen_datos, id_user);
 		return render_template('busqueda_avanzada.html', txt=txt, title='Busqueda', limites_busq=limites_busq)
@@ -596,31 +596,31 @@ def control_lenguaje(param, origen=None):
 
 	return carga_dicc_lenguaje(session['lenguaje'])
 
-	
+
 def calc_paginacion(page, selec, origen):
 	inc_selec = (page-1)*app.config['SEL_POR_PAG']
 	fin_selec = page*app.config['SEL_POR_PAG']
 	selecciones = copy.deepcopy(selec)
 	selecciones[0]['select'] = selec[0]['select'][inc_selec: fin_selec]
-	
+
 	if len(selec[0]['select']) % app.config['SEL_POR_PAG'] == 0:
 		total_pag = len(selec[0]['select']) // app.config['SEL_POR_PAG']
 	else:
 		total_pag = len(selec[0]['select']) // app.config['SEL_POR_PAG'] + 1
-		
+
 	if page > 1:
 		pag_ante = page - 1
 	else:
 		pag_ante = page
-		
+
 	if page < total_pag:
 		pag_post = page+1
 	else:
 		pag_post = page
-		
+
 	next_url = url_for(origen, page=pag_post)
 	prev_url = url_for(origen, page=pag_ante)
 	inic_url = url_for(origen, page=1)
 	fin_url = url_for(origen, page=total_pag)
-	
+
 	return next_url, prev_url, inic_url, fin_url, total_pag, selecciones

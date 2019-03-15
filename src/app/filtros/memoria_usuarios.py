@@ -28,7 +28,7 @@ for ind_p in ind_predecir:
     user = ind_p[1]
     suma_ddo = 0
     suma_dsor = 0
-	
+
     # Recorre todos los users que han jugado al juego y similutid > 0
     # indices de users que han jugado a juego a predecir para User
     ind_jugado = np.transpose(np.where(r[juego,:]==1))
