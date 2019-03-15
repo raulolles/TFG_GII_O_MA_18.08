@@ -22,14 +22,14 @@ class PruebasUnitarias(unittest.TestCase):
 	def test_y (self):
 		y = np.load(r'..\src\app\static\datos\Y.npy')
 		n_users = y.shape[1]
-		self.assertEqual(n_users, 1000)
+		self.assertEqual(n_users, 1006)
 
 
 	def test_r (self):
 		r = np.load(r'..\src\app\static\datos\R.npy')
 		y = np.load(r'..\src\app\static\datos\y.npy')
 		n_juegos, n_users = r.shape
-		self.assertEqual(n_users, 1000)
+		self.assertEqual(n_users, 1006)
 		r2 = np.zeros ((n_juegos, n_users), dtype = np.int)
 		r2[y>0]=1
 		self.assertEqual(r.all(), r2.all())
