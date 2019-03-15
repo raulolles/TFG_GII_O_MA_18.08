@@ -21,7 +21,7 @@ class PruebasUnitarias(unittest.TestCase):
             
 	def test_y (self):
 		y = np.load(r'..\src\app\static\datos\Y.npy')
-		n_juegos, n_users = y.shape
+		n_users = y.shape[1]
 		self.assertEqual(n_users, 1000)
 
 

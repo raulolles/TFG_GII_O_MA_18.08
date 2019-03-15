@@ -8,7 +8,7 @@ def actualiza_filtros():
 	p_mem_users = np.load('app\static\datos\P_Mem_Users.npy')
 	p_mem_juegos = np.load('app\static\datos\P_Mem_Juegos.npy')
 
-	n_juegos,n_users = Y.shape
+	n_juegos = Y.shape[0]
 
 	# Actuliza Matrices de Predicciones
 	media = np.matrix(np.mean(Y, axis=1))

@@ -9,7 +9,6 @@ Se realizan diferentes pruebas de scraping para:
 """
 
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 
 driver = webdriver.Chrome()
 driver.get("https://archive.org/details/softwarelibrary_c64_games")
@@ -17,7 +16,9 @@ driver.get("https://archive.org/details/softwarelibrary_c64_games")
 print('---------------------------------------------------')
 print('Primera prueba Scraping (Python Selenium) sobre web\n')
 
-assert "C64" in driver.title
+if not "C64" in driver.title:
+	raise AssertionError()
+	
 print("  --> Driver Title: \n", driver.title, "\n")
 
 titulo = driver.find_element_by_tag_name('title')

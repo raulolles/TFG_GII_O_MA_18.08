@@ -25,9 +25,11 @@ def genera_tablas(n_juegos):
     r = np.zeros ((n_juegos, n_users), dtype = np.int)
     
     # Rellena Y
+	t=0
     for user in range(n_users):
         for j in range(n_valoraciones):
             y[random.randint(0,n_juegos-1), user] = random.randint(0, rating_max)
+			t=j
 
     # Genera R
     r[y>0]=1
@@ -35,6 +37,3 @@ def genera_tablas(n_juegos):
     # Guarda Matrices
     np.save('../static/datos/Y', y)
     np.save('../static/datos/R', r)
-   
-    
-    

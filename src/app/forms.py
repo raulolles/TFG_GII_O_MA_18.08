@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import IntegerField, StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from app.models import User
 from flask import request
@@ -33,7 +33,7 @@ class RegistrationForm(FlaskForm):
 			
 class SearchForm(FlaskForm):
 	q = StringField(('Search'), validators=[DataRequired()])
-	
+
 	def __init__(self, *args, **kwargs):
 		if 'formdata' not in kwargs:
 			kwargs['formdata'] = request.args

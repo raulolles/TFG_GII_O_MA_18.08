@@ -6,7 +6,7 @@ para los diferentes lenguajes
 
 def crea_dicc_lenguajes():
 
-	diccionario_todos_lenguajes = {'es' : 
+	diccionario_todos_lenguajes = {'es' :
 			{'sesion_leng':'es',
 			
 			'menu_inicio':'Inicio',
@@ -95,7 +95,7 @@ def crea_dicc_lenguajes():
 			'pg_bsq_avan_jgd_todos':'Todos los Juegos',
 			'pg_bsq_avan_jgd_si':'Ya Jugados',
 			'pg_bsq_avan_jgd_no':'No Jugados',
-			'pg_bsq_avan_por_palabra':'Busqueda por palabra',	
+			'pg_bsq_avan_por_palabra':'Busqueda por palabra',
 			'pg_bsq_avan_enviar':'Enviar',
 			
 			'tira_juego_juega':'juega en su web',
@@ -117,7 +117,7 @@ def crea_dicc_lenguajes():
 			'introd_5':'Puntua cada juego según tu preferencias. Lista y busca juegos según han sido puntuados en Retrogaming o en Archive.org',
 			'introd_6':'La lista de juegos está basada en los que se encuetran disponibles en web archive.org'			
 			},
-		'en' : 
+		'en' :
 			{'sesion_leng':'en',
 			
 			'menu_inicio':'Home',
@@ -160,13 +160,13 @@ def crea_dicc_lenguajes():
 			'pg_reg_error_user':'[ Use a different username ]',
 			'pg_reg_error_email':'[ Invalid email address ]',
 			'pg_reg_error_contrasena':'[ Invalid password ]',
-			'pg_reg_error_contrasena_rep':'[ Field must be equal to password ] ',			
+			'pg_reg_error_contrasena_rep':'[ Field must be equal to password ] ',
 			
 			'pg_ind_text':'...we think you\'ll like',
 			'pg_ind_tit_selec_modelos':'Models',
 			'pg_ind_tit_selec_usuarios':'Users',
 			'pg_ind_tit_selec_productos':'Products',
-			'pg_ind_text_favoritos':'...your favorite games',			
+			'pg_ind_text_favoritos':'...your favorite games',
 			'pg_ind_tit_selec_favoritos':'Favorites',
 			
 			'pg_ind_text_mas_jugados_todos':'...the most played by all users',
@@ -202,7 +202,7 @@ def crea_dicc_lenguajes():
 			'pg_bsq_avan_jgd_todos':'All the Games',
 			'pg_bsq_avan_jgd_si':'Played',
 			'pg_bsq_avan_jgd_no':'Not Played',
-			'pg_bsq_avan_por_palabra':'Search by word',	
+			'pg_bsq_avan_por_palabra':'Search by word',
 			'pg_bsq_avan_enviar':'Send',
 			
 			'tira_juego_juega':'play on your website',
@@ -224,7 +224,7 @@ def crea_dicc_lenguajes():
 			'introd_5':'Score each game according to your preferences. List and search for games as they have been rated in Retrogaming or in Archive.org',
 			'introd_6':'The list of games is based on the ones available on web archive.org'
 			},
-		'fr' : 
+		'fr' :
 			{'sesion_leng':'fr',
 			
 			'menu_inicio':'Accueil',
@@ -307,13 +307,13 @@ def crea_dicc_lenguajes():
 			'pg_bsq_avan_stars':'Étoiles',
 			'pg_bsq_avan_comment':'Commentarires',
 			'pg_bsq_avan_valor':'Évaluation',
-			'pg_bsq_avan_media':'Moyenne',	
+			'pg_bsq_avan_media':'Moyenne',
 			'pg_bsq_avan_jugadores':'Joueurs',
 			'pg_bsq_avan_de_los_jugados':'De ceux que vous avez déjà joué?',
 			'pg_bsq_avan_jgd_todos':'Tous les Jeux',
 			'pg_bsq_avan_jgd_si':'Déjà Joué',
 			'pg_bsq_avan_jgd_no':'Pas Joués',
-			'pg_bsq_avan_por_palabra':'Recherche par mot',	
+			'pg_bsq_avan_por_palabra':'Recherche par mot',
 			'pg_bsq_avan_enviar':'Envoyer',
 			
 			'tira_juego_juega':'jouer sur le web',
@@ -335,7 +335,7 @@ def crea_dicc_lenguajes():
 			'introd_5':'Marquez chaque jeu en fonction de vos préférences. Listez et recherchez les jeux tels qu\'ils ont été évalués dans Retrogaming ou sur Archive.org',
 			'introd_6':'La liste des jeux est basée sur ceux disponibles sur web archive.org'
 			},
-		'rm' : 			
+		'rm' :
 			{'sesion_leng':'rm',
 			
 			'menu_inicio':'început',
@@ -418,13 +418,13 @@ def crea_dicc_lenguajes():
 			'pg_bsq_avan_stars':'Stele',
 			'pg_bsq_avan_comment':'Comentarii',
 			'pg_bsq_avan_valor':'Evaluarea ta',
-			'pg_bsq_avan_media':'Medie',	
+			'pg_bsq_avan_media':'Medie',
 			'pg_bsq_avan_jugadores':'Jucători',
 			'pg_bsq_avan_de_los_jugados':'Dintre cele pe care le-ai jucat înainte?',
 			'pg_bsq_avan_jgd_todos':'Toate Jocurile',
 			'pg_bsq_avan_jgd_si':'Jucat Deja',
 			'pg_bsq_avan_jgd_no':'Nu Jucate',
-			'pg_bsq_avan_por_palabra':'Căutare după Cuvânt',	
+			'pg_bsq_avan_por_palabra':'Căutare după Cuvânt',
 			'pg_bsq_avan_enviar':'Trimite',
 			
 			'tira_juego_juega':'juacă pe site-ul lor.',
@@ -450,7 +450,6 @@ def crea_dicc_lenguajes():
 	
 	return diccionario_todos_lenguajes
 
-	
 def carga_dicc_lenguaje(lenguaje):
 	dicc_total = crea_dicc_lenguajes()
 	return dicc_total[lenguaje]

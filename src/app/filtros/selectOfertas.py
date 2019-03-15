@@ -95,17 +95,19 @@ def select_predicciones(origen_datos, id_user):
 def select_aleatorio(origen_datos):
 	unid_select = 6
 	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
-	n_juegos,n_users = y.shape
+	n_juegos = y.shape[0]
 	n_juegos = n_juegos-1
 	seleccion = list()
 	linea_select_a = list()
 	linea_select_b = list()
 	
+	j=0
 	for i in range (unid_select):
 		juego = random.randint(0,n_juegos)
 		linea_select_a = items.loc[juego].values.tolist()
 		linea_select_b = calcula_estad_juego(juego,y,r)
 		seleccion.append(linea_select_a + linea_select_b)
+		j=i
 		
 	return seleccion
 

@@ -1,13 +1,12 @@
-from flask import render_template, flash, redirect, url_for, session, request, g
+from flask import render_template, flash, redirect, url_for, session, request
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, SearchForm
+from app.forms import LoginForm, RegistrationForm
 from app.models import User
 from app.filtros.selectOfertas import select_predicciones, select_favoritos, select_aleatorio, select_mejor_valorados, select_mas_jugados, actualiza_selec, select_busqueda, select_archive, select_busqueda_avanz, calcula_limites_busq
 from app.filtros.actualizaFiltros import actualiza_filtros, actualiza_yr
-from datetime import datetime
-from app.internalizacion.lenguajes import crea_dicc_lenguajes, carga_dicc_lenguaje 
+from app.internalizacion.lenguajes import carga_dicc_lenguaje 
 
 import copy
 
