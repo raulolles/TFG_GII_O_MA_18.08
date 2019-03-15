@@ -68,6 +68,20 @@ def importa_tablas(origen_datos):
 	return y, r, p_modelos, p_mem_users, p_mem_juegos, items
 
 
+def importa_tablas_sin_p_men_jgo(origen_datos):
+	# Importa Matrices
+	y = np.load(origen_datos+'Y.npy')
+	r = np.load(origen_datos+'R.npy')
+	p_modelos = np.load(origen_datos+'P_Modelos.npy')
+	p_mem_users = np.load(origen_datos+'P_Mem_Users.npy')
+
+	# Importa Datos del scraping
+	items = read_table(origen_datos+'datosJuegos.csv',header=None,sep=';',encoding='ISO-8859-1')
+	items.columns = ['juego','fabricante','visitas', 'favoritos', 'comentarios', 'url']
+
+	return y, r, p_modelos, p_mem_users, items
+
+	
 def select_de_matriz(y,p,r,id_user,unid_select,items):
 	r0 = r[:,id_user]
 	# Crea una matriz en la que se guardan los indices, R0 y P0
@@ -268,7 +282,7 @@ def select_busqueda_avanz(origen_datos, id_user, param):
 
 
 def calcula_limites_busq(origen_datos, id_user):
-	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
+	y, r, p_modelos, p_mem_users, items = importa_tablas_sin_p_men_jgo(origen_datos)
 	limites = {'vist_min': items['visitas'].min(),
 			'vist_max': items['visitas'].max(),
 			'star_min': items['favoritos'].min(),
@@ -308,7 +322,7 @@ def ejecuta_seleccion (id_user, items, y, r, unid_select, l):
 	seleccion = list()
 	linea_select_a = list()
 	linea_select_b = list()
-	
+
 	if unid_select > len(l):
 		unid_select = len(l)
 

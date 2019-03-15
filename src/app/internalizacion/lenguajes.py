@@ -109,7 +109,7 @@ def crea_dicc_lenguajes():
 			'paginacion_final':'final',
 			'paginacion_anterior':'anterior',
 			'paginacion_siguient':'siguiente',
-			
+
 			'introd_1':'Retrogaming Recommender',
 			'introd_2':'Commodore 64',
 			'introd_3':'Podrás ver más de 10.000 juegos de la mítica commodore 64.',

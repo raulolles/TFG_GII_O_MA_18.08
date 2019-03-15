@@ -126,7 +126,7 @@ def mas_jugados2_ya_jugado():
 	txt = control_lenguaje(request.args, 'mas_jugados_ya_jugado')
 	jg_ifrm = control_parametros(request.args)
 	texto=txt['pg_ind_text_mas_jugados_todos']
-	
+
 	page = request.args.get('page', 1, type=int)
 	next_url, prev_url, inic_url, fin_url, total_pag, selecciones = calc_paginacion(page, selec, 'mas_jugados2_ya_jugado')
 	return render_template('index.html', txt=txt, title='Mas Jugados', selecciones=selecciones, texto_cab=texto, next_url=next_url, prev_url=prev_url, inic_url=inic_url, fin_url=fin_url, pag=page, total_pag=total_pag, jg_ifrm=jg_ifrm)
