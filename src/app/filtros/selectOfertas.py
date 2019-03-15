@@ -79,7 +79,7 @@ def importa_tablas_2(origen_datos):
 
 	return y, r, items
 
-	
+
 def select_de_matriz(y,p,r,id_user,unid_select,items):
 	r0 = r[:,id_user]
 	# Crea una matriz en la que se guardan los indices, R0 y P0
