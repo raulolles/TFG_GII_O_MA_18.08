@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Prueba de entrenamiento realizada sobre la web 
+Prueba de entrenamiento realizada sobre la web
 https://archive.org/details/softwarelibrary_c64_games
 
 Se realizan diferentes pruebas de scraping para:

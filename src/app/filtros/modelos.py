@@ -12,31 +12,31 @@ def cofi_cost_func (parameters, y, r, n_users, n_juegos, n_features, lamb):
 
     cost=0
     gradient=np.zeros_like(parameters)
-    
+
     # Matriz X y Theta
     x = parameters[0 : n_juegos*n_features]
     x = x.reshape(n_juegos, n_features)
     theta = parameters[n_juegos*n_features :]
     theta = theta.reshape(n_users, n_features)
-    
+
     # Coste
     matriz_hipot = x.dot(theta.T)
     matriz_error = (matriz_hipot - y) * r
     matriz_error_cuad = matriz_error ** 2
     matriz_error_cuad_pel_vista = matriz_error_cuad
-    
+
     error = np.sum(matriz_error_cuad_pel_vista)
     cost = error * 0.5
-    
+
     # regularización
     cost = cost + np.sum(lamb*0.5*(x*x))
     cost = cost + np.sum(lamb*0.5*(theta*theta))
-    
+
     # Gradiante
     grad_x = matriz_error.dot(theta) + lamb * x
     grad_theta = matriz_error.T.dot(x) + lamb * theta
-    gradient = np.append(grad_x.flatten(), grad_theta.flatten())  
-     
+    gradient = np.append(grad_x.flatten(), grad_theta.flatten())
+
     return (cost, gradient)
 
 
@@ -65,7 +65,7 @@ x = parameters[0 : n_juegos*n_feat]
 x = x.reshape(n_juegos, n_feat)
 theta = parameters[n_juegos*n_feat :]
 theta = theta.reshape(n_users, n_feat)
-	
+
 # Predicciones
 p_modelos = np.dot(x, theta.T)
 

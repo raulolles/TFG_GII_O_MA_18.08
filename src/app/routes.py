@@ -10,7 +10,6 @@ from datetime import datetime
 from app.internalizacion.lenguajes import crea_dicc_lenguajes, carga_dicc_lenguaje 
 
 import copy
-import numpy as np
 
 selec = list()
 origen_datos = "app/static/datos/"

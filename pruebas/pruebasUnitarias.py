@@ -51,7 +51,7 @@ class PruebasUnitarias(unittest.TestCase):
 		self.assertEqual (len(p2[0]),0)
 		p2 = np.where(p_mem_users > 5)
 		self.assertEqual (len(p2[0]),0)
-        
+
 
 
 	def test_p_mem_juegos (self):

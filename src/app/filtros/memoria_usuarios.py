@@ -40,7 +40,7 @@ for ind_p in ind_predecir:
         for i_user_jdo in ind_jugado_red:
             suma_ddo = suma_ddo + (y[juego,i_user_jdo]-y[:,i_user_jdo].mean()) * sim[i_user_jdo,user]
             suma_dsor = suma_dsor + np.absolute(sim[i_user_jdo,user])
-		
+
         predicc = y[:,user].mean() + (suma_ddo/suma_dsor)
         if predicc > 0:
             p_mem_users[juego,user] = predicc

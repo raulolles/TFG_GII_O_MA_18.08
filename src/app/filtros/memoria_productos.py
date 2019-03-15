@@ -33,7 +33,7 @@ for ind_p in ind_predecir:
     
     rating_user = np.delete(y[:,user], ind_elim)
     sim_juego = np.delete(sim[:,juego], ind_elim)
-    
+
     suma_ddo = np.sum(rating_user * sim_juego)
     suma_dsor = np.sum(np.absolute(sim_juego))
 

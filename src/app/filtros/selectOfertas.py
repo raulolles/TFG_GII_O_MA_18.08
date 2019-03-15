@@ -30,11 +30,11 @@ def imagen_puntuacion(puntuacion):
 	if puntuacion > -0.5 and puntuacion <= 0.4:
 		str_imagen = "simbolos/star_cero.png"
 	elif puntuacion < 1:
-		str_imagen = "simbolos/star_cero_med.png"	
+		str_imagen = "simbolos/star_cero_med.png"
 	elif puntuacion < 1.4:
-		str_imagen = "simbolos/star_uno.png"	
+		str_imagen = "simbolos/star_uno.png"
 	elif puntuacion < 2:
-		str_imagen = "simbolos/star_uno_med.png"	
+		str_imagen = "simbolos/star_uno_med.png"
 	elif puntuacion < 2.4:
 		str_imagen = "simbolos/star_dos.png"
 	elif puntuacion < 3:
@@ -52,7 +52,7 @@ def imagen_puntuacion(puntuacion):
 	
 	return str_imagen
 
-	
+
 def importa_tablas(origen_datos):
 	# Importa Matrices
 	y = np.load(origen_datos+'Y.npy')
@@ -60,24 +60,24 @@ def importa_tablas(origen_datos):
 	p_modelos = np.load(origen_datos+'P_Modelos.npy')
 	p_mem_users = np.load(origen_datos+'P_Mem_Users.npy')
 	p_mem_juegos = np.load(origen_datos+'P_Mem_Juegos.npy')
-	
+
 	# Importa Datos del scraping
 	items = read_table(origen_datos+'datosJuegos.csv',header=None,sep=';',encoding='ISO-8859-1')
 	items.columns = ['juego','fabricante','visitas', 'favoritos', 'comentarios', 'url']
 
 	return y, r, p_modelos, p_mem_users, p_mem_juegos, items
-	
-	
+
+
 def select_de_matriz(y,p,r,id_user,unid_select,items):
 	r0 = r[:,id_user]
 	# Crea una matriz en la que se guardan los indices, R0 y P0
 	p0= p[:,id_user]
-	
+
 	jugado = 0
-	
-	tabla_slc = crea_tabla_slc(p0, r0, True, jugado)	
+
+	tabla_slc = crea_tabla_slc(p0, r0, True, jugado)
 	seleccion = ejecuta_seleccion (id_user, items, y, r, unid_select, tabla_slc)
-		
+
 	return seleccion
 	
 	
@@ -120,7 +120,7 @@ def select_favoritos(origen_datos, id_user):
 	
 	jugado = 1
 	
-	tabla_slc = crea_tabla_slc(y0, r0, True, jugado)	
+	tabla_slc = crea_tabla_slc(y0, r0, True, jugado)
 	seleccion = ejecuta_seleccion (id_user, items, y, r, unid_select, tabla_slc)
 		
 	return seleccion
@@ -134,7 +134,7 @@ def select_mas_jugados(origen_datos, id_user, jugado):
 	# Crea una matriz en la que se guardan los indices, R0 y suma juegos
 	veces_jug = r.sum(axis = 1)
 
-	tabla_slc = crea_tabla_slc(veces_jug, r0, True, jugado)	
+	tabla_slc = crea_tabla_slc(veces_jug, r0, True, jugado)
 	seleccion = ejecuta_seleccion (id_user, items, y, r, unid_select, tabla_slc)
 	
 	return seleccion
