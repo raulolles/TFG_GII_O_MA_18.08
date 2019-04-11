@@ -28,7 +28,7 @@ def genera_tablas(n_juegos):
     for user in range(n_users):
 		i = 0
 		while i < n_valoraciones:
-            y[random.randint(0,n_juegos-1), user] = random.randint(0, rating_max)
+			y[random.randint(0,n_juegos-1), user] = random.randint(0, rating_max)
 			i = i+1
 
     # Genera R

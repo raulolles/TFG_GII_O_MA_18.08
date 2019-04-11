@@ -106,7 +106,7 @@ def select_predicciones(origen_datos, id_user):
 
 def select_aleatorio(origen_datos):
 	unid_select = 6
-	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
+	y, r, items = importa_tablas_2(origen_datos)
 	n_juegos = y.shape[0]
 	n_juegos = n_juegos-1
 	seleccion = list()
@@ -126,7 +126,7 @@ def select_aleatorio(origen_datos):
 
 def select_favoritos(origen_datos, id_user):
 	unid_select = 100
-	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
+	y, r, items = importa_tablas_2(origen_datos)
 	r0 = r[:,id_user]
 
 	# Crea una matriz en la que se guardan los indices, R0 y P0
@@ -142,7 +142,7 @@ def select_favoritos(origen_datos, id_user):
 
 def select_mas_jugados(origen_datos, id_user, jugado):
 	unid_select = 100
-	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
+	y, r, items = importa_tablas_2(origen_datos)
 	r0 = r[:,id_user]
 
 	# Crea una matriz en la que se guardan los indices, R0 y suma juegos
@@ -156,7 +156,7 @@ def select_mas_jugados(origen_datos, id_user, jugado):
 
 def select_mejor_valorados(origen_datos, id_user, jugado):
 	unid_select = 100
-	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
+	y, r, items = importa_tablas_2(origen_datos)
 	r0 = r[:,id_user]
 
 	# Crea una matriz en la que se guardan los indices, R0 y suma juegos
@@ -171,7 +171,7 @@ def select_mejor_valorados(origen_datos, id_user, jugado):
 
 def select_archive(origen_datos, id_user,columna,jugado):
 	unid_select = 200
-	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
+	y, r, items = importa_tablas_2(origen_datos)
 	r0 = r[:,id_user]
 
 	# Crea una matriz en la que se guardan los indices, R0 y suma juegos
