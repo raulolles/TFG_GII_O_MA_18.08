@@ -113,11 +113,13 @@ def select_aleatorio(origen_datos):
 	linea_select_a = list()
 	linea_select_b = list()
 
-	for i in range (unid_select):
+	i = 0
+	while i < unid_select:
 		juego = random.randint(0,n_juegos)
 		linea_select_a = items.loc[juego].values.tolist()
 		linea_select_b = calcula_estad_juego(juego,y,r)
 		seleccion.append(linea_select_a + linea_select_b)
+		i = i+1
 
 	return seleccion
 
@@ -183,7 +185,7 @@ def select_archive(origen_datos, id_user,columna,jugado):
 
 def select_busqueda(origen_datos, id_user, palabra_busq):
 	unid_select = 100
-	y, r, p_modelos, p_mem_users, p_mem_juegos, items = importa_tablas(origen_datos)
+	y, r, items = importa_tablas_2(origen_datos)
 	r0 = r[:,id_user]
 
 	# Crea lista con distancia (Levenshtein )
@@ -257,8 +259,8 @@ def select_busqueda_avanz(origen_datos, id_user, param):
 	# Si hay juegos en l y hay palabra de búsqueda
 	if len(l) > 0 and param['q'] != '':
 		palabra_busq = param['q'].lower()
-		for i in range(len(l)):
-			palabra = items.loc[l[i,0]][0].lower()
+		for valor in l:
+			palabra = items.loc[valor[0]][0].lower()
 			dist_min = np.inf
 			for p in palabra.split():
 				if palabra_busq in p:
@@ -269,7 +271,7 @@ def select_busqueda_avanz(origen_datos, id_user, param):
 				dist = jel.levenshtein_distance(palabra_busq, p)
 				if dist < dist_min:
 					dist_min = dist
-			l[i][8] = dist_min
+			valor[8] = dist_min
 
 		# ordena la tabla por distancia
 		l = l[l[:,8].argsort()]
