@@ -4,6 +4,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/3873c7a1ed9449428b18c4d2b038144c)](https://www.codacy.com/app/raulolles/TFG_GII_O_MA_18.08?utm_source=github.com&utm_medium=referral&utm_content=raulolles/TFG_GII_O_MA_18.08&utm_campaign=Badge_Coverage)
 
 ## Retrogaming Recommender
+<img src="https://github.com/raulolles/TFG_GII_O_MA_18.08/blob/master/src/app/static/imagenes/img_readme.png" alt="Juegos Commodore 64"/>
 
 Retrogaming Recommender ofrece a los nostálgicos de los juegos de la mítica commodore 64 sugerencias entre más de 10.000 juegos.
 
